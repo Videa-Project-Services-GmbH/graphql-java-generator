@@ -98,6 +98,20 @@ public class BasicScalarMapper {
                 className = ClassName.get(PACKAGE_LANG, "Character");
                 break;
             default:
+                className = convertCustom(scalarName);
+                break;
+        }
+        return className;
+    }
+
+
+    private static ClassName convertCustom(String scalarName) {
+        ClassName className;
+        switch (scalarName) {
+            case "Decimal":
+                className = ClassName.get(PACKAGE_MATH, "BigDecimal");
+                break;
+            default:
                 className = null;
                 break;
         }
