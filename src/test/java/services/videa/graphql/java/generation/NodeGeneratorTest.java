@@ -24,6 +24,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import services.videa.graphql.java.GqlSchemaParser;
+import services.videa.graphql.java.enums.EnumGenerator;
 import services.videa.graphql.java.scalars.ScalarGenerator;
 
 import java.io.File;

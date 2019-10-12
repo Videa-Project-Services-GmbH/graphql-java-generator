@@ -17,42 +17,44 @@
  *  THE SOFTWARE.
  */
 
-package services.videa.graphql.java.generation;
+package services.videa.graphql.java.enums;
 
-import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
 import graphql.language.EnumTypeDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import services.videa.graphql.java.AbstractGenerator;
+import services.videa.graphql.java.FileCreator;
+import services.videa.graphql.java.GeneratorInterface;
 
 import java.util.Map;
 
-public class EnumGenerator extends AbstractGenerator {
+
+/**
+ *
+ */
+public class EnumGenerator implements GeneratorInterface {
     private static Logger logger = LoggerFactory.getLogger(EnumGenerator.class);
 
     private Map<String, EnumTypeDefinition> enums;
+    private FileCreator fileCreator;
 
 
-    public EnumGenerator(Map<String, EnumTypeDefinition> enums, String targetFolder, String targetPackage) {
-        super(targetFolder, targetPackage);
+    public EnumGenerator(Map<String, EnumTypeDefinition> enums, String generationFolder, String packageName) {
+        this.fileCreator = fileCreator(generationFolder, packageName);
         this.enums = enums;
     }
 
 
-    void generate(EnumTypeDefinition enumTypeDefinition) {
-        logger.debug("enumTypeDefinition={}", enumTypeDefinition);
+    /**
+     *
+     * @param enumTypeDefinition
+     */
+    private void generate(EnumTypeDefinition enumTypeDefinition) {
+        logger.debug("enumTypeDefinition: {}", enumTypeDefinition);
 
-        TypeSpec.Builder builder = TypeSpec.enumBuilder(enumTypeDefinition.getName());
-        enumTypeDefinition.getEnumValueDefinitions().forEach(enumValueDefinition -> {
-            builder.addEnumConstant(enumValueDefinition.getName());
-        });
+        TypeSpec typeSpec = EnumMapper.convert(enumTypeDefinition);
 
-        builder.addJavadoc(comment(enumTypeDefinition.getDescription()));
-
-        TypeSpec typeSpec = builder.build();
-        JavaFile javaFile = JavaFile.builder(packageName, typeSpec).build();
-        writeModel(javaFile);
+        fileCreator.write(typeSpec);
     }
 
 

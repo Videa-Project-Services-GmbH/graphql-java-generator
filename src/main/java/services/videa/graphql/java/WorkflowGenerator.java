@@ -1,5 +1,6 @@
 package services.videa.graphql.java;
 
+import services.videa.graphql.java.enums.EnumGenerator;
 import services.videa.graphql.java.generation.*;
 import services.videa.graphql.java.scalars.ScalarGenerator;
 

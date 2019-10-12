@@ -26,13 +26,14 @@ import services.videa.graphql.java.GqlSchemaParser;
 import java.io.File;
 import java.util.Arrays;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class ScalarGeneratorTest {
 
     private static final String SRC_FOLDER = "./src/main/generated";
     private static final String PACKAGE_NAME = "services.videa.graphql.java.types";
-    private static final String FILE_PATH =SRC_FOLDER + "/" + PACKAGE_NAME.replace(".", "/");
+    private static final String FILE_PATH = SRC_FOLDER + "/" + PACKAGE_NAME.replace(".", "/");
 
     private ScalarGenerator scalarGenerator;
 
@@ -44,17 +45,15 @@ public class ScalarGeneratorTest {
 
 
     @Test
-    public void all() {
+    public void allCustomScalars() {
         scalarGenerator.generate();
-        deleteTypes();
-    }
 
-
-    private void deleteTypes() {
         File[] files = new File(FILE_PATH).listFiles();
-        if (files != null) {
-            Arrays.stream(files).forEach(File::delete);
-        }
+        assertNotNull(files);
+        assertTrue(files.length > 0);
+
+        Arrays.stream(files).forEach(File::delete);
     }
+
 
 }

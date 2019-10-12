@@ -42,7 +42,7 @@ public class ScalarGenerator implements GeneratorInterface {
 
     public ScalarGenerator(Map<String, ScalarTypeDefinition> scalars, String generationFolder, String packageName) {
         this.scalars = scalars;
-        this.fileCreator = new FileCreator(generationFolder, packageName);
+        this.fileCreator = fileCreator(generationFolder, packageName);
     }
 
 
