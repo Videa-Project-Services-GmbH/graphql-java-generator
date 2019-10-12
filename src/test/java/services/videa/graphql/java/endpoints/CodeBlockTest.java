@@ -1,4 +1,4 @@
-package services.videa.graphql.java.consumer;
+package services.videa.graphql.java.endpoints;
 
 import com.squareup.javapoet.*;
 import lombok.Data;

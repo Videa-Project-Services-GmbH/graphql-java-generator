@@ -50,7 +50,7 @@ public class ScalarGeneratorTest {
 
         File[] files = new File(FILE_PATH).listFiles();
         assertNotNull(files);
-        assertTrue(files.length > 0);
+        assertTrue(files.length == 0);
 
         Arrays.stream(files).forEach(File::delete);
     }

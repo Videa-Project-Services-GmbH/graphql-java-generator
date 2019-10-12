@@ -30,7 +30,7 @@ public class CustomScalarMapperTest {
     public void jsonString() {
         ClassName className = customScalarMapper.convert("JSONString");
 
-        assertEquals("JSONString", className.simpleName());
+        assertEquals("String", className.simpleName());
     }
 
 
@@ -38,7 +38,7 @@ public class CustomScalarMapperTest {
     public void allScalars() {
         schemaParser.scalars().values().forEach(scalar -> {
             ClassName className = customScalarMapper.convert(scalar.getName());
-            assertEquals(scalar.getName(), className.simpleName());
+            assertEquals("String", className.simpleName());
         });
     }
 

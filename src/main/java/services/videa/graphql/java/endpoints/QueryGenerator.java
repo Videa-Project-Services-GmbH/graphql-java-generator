@@ -1,8 +1,9 @@
-package services.videa.graphql.java.consumer;
+package services.videa.graphql.java.endpoints;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.javapoet.*;
 import graphql.language.ObjectTypeDefinition;
+import graphql.language.ScalarTypeDefinition;
 import graphql.language.TypeName;
 import lombok.Data;
 import lombok.Getter;
@@ -11,6 +12,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
+import services.videa.graphql.java.FileCreator;
+import services.videa.graphql.java.GeneratorInterface;
+import services.videa.graphql.java.inputs.InputMapper;
+import services.videa.graphql.java.types.TypeMapper;
 
 import javax.lang.model.element.Modifier;
 import java.io.IOException;
@@ -20,52 +25,56 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class QueryGenerator extends AbstractGenerator {
+public class QueryGenerator implements GeneratorInterface {
     private static Logger logger = LoggerFactory.getLogger(QueryGenerator.class);
 
+    private static final String NEWLINE = System.getProperty("line.separator");
+
     private ObjectTypeDefinition queryTypeDefinition;
+    private TypeMapper typeMapper;
+    private String packageName;
+    private FileCreator fileCreator;
 
-
-    public QueryGenerator(ObjectTypeDefinition queryTypeDefinition, String targetPackageName) {
-        logger.debug("queryTypeDefinition={}, targetPackageName={}", queryTypeDefinition, targetPackageName);
-
+    public QueryGenerator(ObjectTypeDefinition queryTypeDefinition,
+                          Map<String, ScalarTypeDefinition> scalars,
+                          String generationFolder, String packageName) {
         this.queryTypeDefinition = queryTypeDefinition;
-        this.targetPackageName = targetPackageName;
+        typeMapper = new TypeMapper(scalars);
+        this.packageName = packageName;
+        fileCreator = new FileCreator(generationFolder, packageName);
     }
 
 
-    public void createClass() {
-        logger.trace("{}", "entering");
-
+    public void generate() {
         List<MethodSpec> methodSpecList = queryTypeDefinition.getFieldDefinitions().stream().map(methodDefinition -> {
 
             String methodName = methodDefinition.getName();
-            logger.debug("methodName={}", methodName);
-
-            String returnTypeName = ((TypeName) methodDefinition.getType()).getName();
-            Class<?> returnTypeClass = toTypeClazz(returnTypeName, targetPackageName);
-            logger.debug("returnTypeName={}, returnTypeClass={}", returnTypeName, returnTypeClass);
+            logger.debug("methodName: {}", methodName);
 
             List<ParameterSpec> parameterSpecList =
                     methodDefinition.getInputValueDefinitions().stream().map(parameterDefinition -> {
-                        String typeName = extractTypeName(parameterDefinition.getType());
-                        Class<?> parameterClazz = toTypeClazz(typeName, targetPackageName);
-                        return ParameterSpec.builder(parameterClazz, parameterDefinition.getName()).build();
+                        com.squareup.javapoet.TypeName typeName
+                                = typeMapper.typeName(parameterDefinition.getType(), packageName);
+                        return ParameterSpec.builder(typeName, parameterDefinition.getName()).build();
                     }).collect(Collectors.toList());
+
+            String returnTypeName = ((TypeName) methodDefinition.getType()).getName();
+            ClassName returnType = ClassName.get(packageName, returnTypeName);
 
             String methodBody = generateMethodBody(methodName, returnTypeName, parameterSpecList);
 
             return MethodSpec.methodBuilder(methodName)
                     .addModifiers(Modifier.PUBLIC)
                     .addException(IOException.class)
-                    .returns(returnTypeClass)
+                    .returns(returnType)
                     .addParameters(parameterSpecList)
                     .addCode(CodeBlock.of(methodBody) + NEWLINE)
                     .build();
 
         }).collect(Collectors.toList());
 
-        String comment = extractComment(queryTypeDefinition.getDescription());
+        String comment = queryTypeDefinition.getDescription() != null ?
+                queryTypeDefinition.getDescription().getContent() : System.getProperty("line.separator");
 
         List<FieldSpec> fieldSpecs = new ArrayList<>();
         fieldSpecs.add(FieldSpec.builder(RestTemplate.class, "restTemplate", Modifier.PRIVATE).build());
@@ -121,10 +130,9 @@ public class QueryGenerator extends AbstractGenerator {
                 .addMethods(methodSpecList)
                 .build();
 
-        writeClass(typeSpec);
-
-        logger.trace("{}", "exiting");
+        fileCreator.write(typeSpec);
     }
+
 
     private String generateMethodBody(String methodName, String returnTypeName, List<ParameterSpec> parameterSpecList) {
         StringBuffer body = new StringBuffer();
@@ -169,11 +177,11 @@ public class QueryGenerator extends AbstractGenerator {
 
     private String generateParameterList(List<ParameterSpec> parameterSpecList) {
         StringBuffer generationBuffer = new StringBuffer();
-        parameterSpecList.stream().forEach(parameterSpec -> {
+        parameterSpecList.forEach(parameterSpec -> {
             String format = MessageFormat.format("if({0} != null) ", parameterSpec.name) + " { ";
             generationBuffer.append(format).append(NEWLINE);
 
-            String type = "String".equals(((ClassName)parameterSpec.type).simpleName()) ? "\\\"{0}\\\", \"" : "{0}, \"";
+            String type = "String".equals(parameterSpec.name) ? "\\\"{0}\\\", \"" : "{0}, \"";
             String pair = "    jsonBody += java.text.MessageFormat.format(\""
                     + parameterSpec.name + ":" + type + ", " + parameterSpec.name+ ");";
             generationBuffer.append(pair).append(NEWLINE);

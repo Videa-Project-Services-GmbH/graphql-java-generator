@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import services.videa.graphql.java.FileCreator;
 import services.videa.graphql.java.GeneratorInterface;
 
+import javax.swing.*;
 import java.util.Map;
 
 
@@ -37,12 +38,14 @@ public class InputGenerator implements GeneratorInterface {
 
     private Map<String, InputObjectTypeDefinition> inputs;
     private String packageName;
+    private InputMapper inputMapper;
     private FileCreator fileCreator;
 
 
     public InputGenerator(Map<String, InputObjectTypeDefinition> inputs, String generationFolder, String packageName) {
         this.inputs = inputs;
         this.packageName = packageName;
+        inputMapper = new InputMapper(packageName);
         fileCreator = fileCreator(generationFolder, packageName);
     }
 
@@ -54,7 +57,7 @@ public class InputGenerator implements GeneratorInterface {
     private void generate(InputObjectTypeDefinition inputObjectTypeDefinition) {
         logger.debug("inputObjectTypeDefinition: {}", inputObjectTypeDefinition);
 
-        TypeSpec typeSpec = InputMapper.convert(inputObjectTypeDefinition, packageName);
+        TypeSpec typeSpec = inputMapper.convert(inputObjectTypeDefinition);
 
         fileCreator.write(typeSpec);
     }

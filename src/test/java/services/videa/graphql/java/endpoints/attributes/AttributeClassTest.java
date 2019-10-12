@@ -17,7 +17,7 @@
  *  THE SOFTWARE.
  */
 
-package services.videa.graphql.java.consumer.attributes;
+package services.videa.graphql.java.endpoints.attributes;
 
 import org.junit.Test;
 
@@ -25,14 +25,14 @@ public class AttributeClassTest {
 
     @Test
     public void fetchAttributes() throws ClassNotFoundException {
-        Class<?> aClass = Class.forName("services.videa.graphql.java.consumer.attributes.AttributeClassFake");
+        Class<?> aClass = Class.forName("services.videa.graphql.java.endpoints.attributes.AttributeClassFake");
 
         readFields(aClass);
     }
 
     @Test
     public void attributeEdge() throws ClassNotFoundException {
-        Class<?> aClass = Class.forName("services.videa.graphql.java.consumer.attributes.AttributeEdge");
+        Class<?> aClass = Class.forName("services.videa.graphql.java.endpoints.attributes.AttributeEdge");
 
         readFields(aClass);
     }
@@ -46,7 +46,7 @@ public class AttributeClassTest {
 
     @Test
     public void listAttributes() throws ClassNotFoundException {
-        Class<?> aClass = Class.forName("services.videa.graphql.java.consumer.attributes.AttributeClassConnection");
+        Class<?> aClass = Class.forName("services.videa.graphql.java.endpoints.attributes.AttributeClassConnection");
 
         String queryRequest = readFields(aClass);
         System.out.println(queryRequest);

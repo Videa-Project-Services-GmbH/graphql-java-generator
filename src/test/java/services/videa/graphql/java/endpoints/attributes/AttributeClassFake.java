@@ -17,7 +17,7 @@
  *  THE SOFTWARE.
  */
 
-package services.videa.graphql.java.consumer.attributes;
+package services.videa.graphql.java.endpoints.attributes;
 
 import java.lang.Integer;
 import java.lang.String;

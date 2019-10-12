@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import services.videa.graphql.java.scalars.BasicScalarMapper;
 
 import javax.lang.model.element.Modifier;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,12 +20,18 @@ import java.util.stream.Collectors;
 public class InputMapper {
     private static Logger logger = LoggerFactory.getLogger(InputMapper.class);
 
+    private String packageName;
 
-    public static TypeSpec convert(InputObjectTypeDefinition inputObjectTypeDefinition, String packageName) {
+    public InputMapper(String packageName) {
+        this.packageName = packageName;
+    }
+
+
+    public TypeSpec convert(InputObjectTypeDefinition inputObjectTypeDefinition) {
         logger.debug("inputObjectTypeDefinition: {}", inputObjectTypeDefinition);
 
         List<FieldSpec> fieldSpecs = inputObjectTypeDefinition.getInputValueDefinitions().stream()
-                .map(inputValueDefinition -> convert(inputValueDefinition, packageName))
+                .map(this::convert)
                 .collect(Collectors.toList());
 
         TypeSpec.Builder typeSpecBuilder = TypeSpec.classBuilder(inputObjectTypeDefinition.getName())
@@ -45,12 +50,7 @@ public class InputMapper {
     }
 
 
-    /**
-     * @param inputValueDefinition
-     * @param packageName
-     * @return
-     */
-    private static FieldSpec convert(InputValueDefinition inputValueDefinition, String packageName) {
+    private FieldSpec convert(InputValueDefinition inputValueDefinition) {
         logger.debug("inputValueDefinition: {}", inputValueDefinition);
 
         String typeName = typeName(inputValueDefinition.getType());
@@ -69,11 +69,7 @@ public class InputMapper {
     }
 
 
-    /**
-     * @param type
-     * @return
-     */
-    private static String typeName(Type type) {
+    public static String typeName(Type type) {
         String typeName = null;
         if (type instanceof graphql.language.TypeName) {
             typeName = ((graphql.language.TypeName) type).getName();

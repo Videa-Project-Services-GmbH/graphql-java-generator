@@ -17,12 +17,11 @@
  *  THE SOFTWARE.
  */
 
-package services.videa.graphql.java.consumer.attributes;
+package services.videa.graphql.java.endpoints.attributes;
 
-import java.util.List;
+public class AttributeEdge {
 
-public class AttributeClassConnection {
+    private AttributeClassFake node;
 
-    private List<AttributeEdge> edges;
-
+    private String cursor;
 }

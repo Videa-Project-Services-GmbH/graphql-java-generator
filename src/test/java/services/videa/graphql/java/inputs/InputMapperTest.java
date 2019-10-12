@@ -12,12 +12,12 @@ public class InputMapperTest {
     private static final String PACKAGE_NAME = "services.videa.graphql.java.types";
 
     private GqlSchemaParser schemaParser = new GqlSchemaParser("/zemtu-test.gql");
-
+    private InputMapper inputMapper = new InputMapper(PACKAGE_NAME);
 
     @Test
     public void allInputs() {
         schemaParser.inputTypes().values().forEach(inputType -> {
-            TypeSpec typeSpec = InputMapper.convert(inputType, PACKAGE_NAME);
+            TypeSpec typeSpec = inputMapper.convert(inputType);
             assertEquals(inputType.getName(), typeSpec.name);
         });
     }

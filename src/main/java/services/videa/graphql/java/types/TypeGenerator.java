@@ -71,11 +71,16 @@ public class TypeGenerator implements GeneratorInterface {
 
 
     /**
-     *
+     * This public methods generates all GraphQL types except Query and Mutation. These two
+     * special endpoint classes are to be generated specifically after creation of all other types.
      */
     @Override
     public void generate() {
-        types.forEach((key, value) -> generate(value));
+        types.forEach((key, value) -> {
+            if(!("Query".equals(value.getName()) || "Mutation".equals(value.getName()))) {
+                generate(value);
+            }
+        });
     }
 
 }
