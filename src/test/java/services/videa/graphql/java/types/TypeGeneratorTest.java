@@ -58,7 +58,8 @@ public class TypeGeneratorTest {
         interfaceGenerator = new InterfaceGenerator(schemaParser.interfaces(), SRC_FOLDER, PACKAGE_NAME);
         inputGenerator = new InputGenerator(schemaParser.inputTypes(), SRC_FOLDER, PACKAGE_NAME);
 
-        typeGenerator = new TypeGenerator(schemaParser.objectTypes(), SRC_FOLDER, PACKAGE_NAME);
+        typeGenerator = new TypeGenerator(schemaParser.objectTypes(),
+                schemaParser.scalars(), SRC_FOLDER, PACKAGE_NAME);
     }
 
 
@@ -70,6 +71,27 @@ public class TypeGeneratorTest {
         interfaceGenerator.generate();
 
         ObjectTypeDefinition userNode = schemaParser.objectTypes().get("UserNode");
+        typeGenerator.generate(userNode);
+
+        File[] files = new File(FILE_PATH).listFiles();
+        assertNotNull(files);
+        assertTrue(files.length >= 1);
+
+        Arrays.stream(files).forEach(File::delete);
+    }
+
+
+    @Test
+    public void dataStoreNode() {
+        scalarGenerator.generate();
+        enumGenerator.generate();
+        inputGenerator.generate();
+        interfaceGenerator.generate();
+
+        ObjectTypeDefinition ownerNode = schemaParser.objectTypes().get("OwnerNode");
+        typeGenerator.generate(ownerNode);
+
+        ObjectTypeDefinition userNode = schemaParser.objectTypes().get("DataStoreNode");
         typeGenerator.generate(userNode);
 
         File[] files = new File(FILE_PATH).listFiles();

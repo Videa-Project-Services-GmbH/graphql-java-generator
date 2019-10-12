@@ -22,11 +22,13 @@ package services.videa.graphql.java.types;
 import com.squareup.javapoet.TypeSpec;
 import graphql.language.InputObjectTypeDefinition;
 import graphql.language.ObjectTypeDefinition;
+import graphql.language.ScalarTypeDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.videa.graphql.java.FileCreator;
 import services.videa.graphql.java.GeneratorInterface;
 import services.videa.graphql.java.inputs.InputMapper;
+import services.videa.graphql.java.scalars.CustomScalarMapper;
 
 import java.util.Map;
 
@@ -37,13 +39,19 @@ import java.util.Map;
 public class TypeGenerator implements GeneratorInterface {
     private static Logger logger = LoggerFactory.getLogger(TypeGenerator.class);
 
+
     private Map<String, ObjectTypeDefinition> types;
+    private TypeMapper typeMapper;
+
     private String packageName;
     private FileCreator fileCreator;
 
 
-    public TypeGenerator(Map<String, ObjectTypeDefinition> types, String generationFolder, String packageName) {
+    public TypeGenerator(Map<String, ObjectTypeDefinition> types,
+                         Map<String, ScalarTypeDefinition> scalars,
+                         String generationFolder, String packageName) {
         this.types = types;
+        typeMapper = new TypeMapper(scalars);
         this.packageName = packageName;
         fileCreator = fileCreator(generationFolder, packageName);
     }
@@ -56,7 +64,7 @@ public class TypeGenerator implements GeneratorInterface {
     public void generate(ObjectTypeDefinition objectTypeDefinition) {
         logger.debug("objectTypeDefinition: {}", objectTypeDefinition);
 
-        TypeSpec typeSpec = TypeMapper.convert(objectTypeDefinition, packageName);
+        TypeSpec typeSpec = typeMapper.convert(objectTypeDefinition, packageName);
 
         fileCreator.write(typeSpec);
     }

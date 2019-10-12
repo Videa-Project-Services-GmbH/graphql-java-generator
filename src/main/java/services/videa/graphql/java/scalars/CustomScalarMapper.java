@@ -20,40 +20,40 @@
 package services.videa.graphql.java.scalars;
 
 import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.TypeSpec;
 import graphql.language.ScalarTypeDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.lang.model.element.Modifier;
+import java.util.Map;
 
+
+/**
+ *
+ */
 public class CustomScalarMapper {
     private static Logger logger = LoggerFactory.getLogger(CustomScalarMapper.class);
 
+    private Map<String, ScalarTypeDefinition> scalars;
+
+
+    public CustomScalarMapper(Map<String, ScalarTypeDefinition> scalars) {
+        this.scalars = scalars;
+    }
+
 
     /**
-     * Convert a GraphQL scalar type to a Java Poet type specification. With this a
-     * Java class can be generated.
      *
-     * @param scalar Scalar type to convert to TypeSpec
-     * @return TypeSpec to generate JavaPoet class
+     * @param scalarName
+     * @return
      */
-    public static TypeSpec convert(ScalarTypeDefinition scalar) {
-        logger.debug("scalar: {}", scalar);
+    public ClassName convert(String scalarName) {
+        ClassName className = null;
 
-        TypeSpec.Builder typeSpecBuilder = TypeSpec.classBuilder(scalar.getName())
-                .addModifiers(Modifier.PUBLIC)
-                .addField(ClassName.get("java.lang", "String"),
-                        "value", Modifier.PUBLIC);
-
-        if (scalar.getDescription() != null) {
-            typeSpecBuilder.addJavadoc(scalar.getDescription().getContent());
+        if(scalars.containsKey(scalarName)) {
+            className = ClassName.get("java.lang", "String");
         }
 
-        TypeSpec typeSpec = typeSpecBuilder.build();
-
-        logger.debug("typeSpec: {}", typeSpec);
-        return typeSpec;
+        return className;
     }
 
 

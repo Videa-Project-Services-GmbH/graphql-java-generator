@@ -20,13 +20,8 @@
 package services.videa.graphql.java.scalars;
 
 import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.JavaFile;
-import com.squareup.javapoet.TypeSpec;
-import graphql.language.ScalarTypeDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.lang.model.element.Modifier;
 
 public class BasicScalarMapper {
     private static Logger logger = LoggerFactory.getLogger(BasicScalarMapper.class);
@@ -98,14 +93,14 @@ public class BasicScalarMapper {
                 className = ClassName.get(PACKAGE_LANG, "Character");
                 break;
             default:
-                className = convertCustom(scalarName);
+                className = convertIndividual(scalarName);
                 break;
         }
         return className;
     }
 
 
-    private static ClassName convertCustom(String scalarName) {
+    private static ClassName convertIndividual(String scalarName) {
         ClassName className;
         switch (scalarName) {
             case "Decimal":

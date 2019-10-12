@@ -1,10 +1,12 @@
 package services.videa.graphql.java.scalars;
 
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeSpec;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import services.videa.graphql.java.GqlSchemaParser;
+import services.videa.graphql.java.types.TypeMapper;
 
 import java.io.File;
 import java.util.Arrays;
@@ -14,28 +16,29 @@ import static org.junit.Assert.assertTrue;
 
 public class CustomScalarMapperTest {
 
-    private GqlSchemaParser schemaParser = new GqlSchemaParser("/zemtu-test.gql");
+    private GqlSchemaParser schemaParser;
+    private CustomScalarMapper customScalarMapper;
 
     @Before
     public void setUp() {
+        schemaParser = new GqlSchemaParser("/zemtu-test.gql");
+        customScalarMapper = new CustomScalarMapper(schemaParser.scalars());
     }
 
 
     @Test
     public void jsonString() {
-        TypeSpec typeSpec = CustomScalarMapper.convert(schemaParser.scalars().get("JSONString"));
+        ClassName className = customScalarMapper.convert("JSONString");
 
-        assertEquals("JSONString", typeSpec.name);
-        assertEquals(1, typeSpec.fieldSpecs.size());
+        assertEquals("JSONString", className.simpleName());
     }
 
 
     @Test
     public void allScalars() {
         schemaParser.scalars().values().forEach(scalar -> {
-            TypeSpec typeSpec = CustomScalarMapper.convert(scalar);
-            assertEquals(scalar.getName(), typeSpec.name);
-            assertEquals(1, typeSpec.fieldSpecs.size());
+            ClassName className = customScalarMapper.convert(scalar.getName());
+            assertEquals(scalar.getName(), className.simpleName());
         });
     }
 

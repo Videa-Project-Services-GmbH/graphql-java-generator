@@ -9,9 +9,11 @@ import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.videa.graphql.java.scalars.BasicScalarMapper;
+import services.videa.graphql.java.scalars.CustomScalarMapper;
 
 import javax.lang.model.element.Modifier;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -21,8 +23,21 @@ import java.util.stream.Collectors;
 public class TypeMapper {
     private static Logger logger = LoggerFactory.getLogger(TypeMapper.class);
 
+    private CustomScalarMapper customScalarMapper;
 
-    public static TypeSpec convert(ObjectTypeDefinition objectTypeDefinition, String packageName) {
+
+    public TypeMapper(Map<String, ScalarTypeDefinition> scalars) {
+        customScalarMapper = new CustomScalarMapper(scalars);
+    }
+
+
+    /**
+     *
+     * @param objectTypeDefinition
+     * @param packageName
+     * @return
+     */
+    public TypeSpec convert(ObjectTypeDefinition objectTypeDefinition, String packageName) {
         logger.debug("objectTypeDefinition: {}", objectTypeDefinition);
 
         List<FieldSpec> fieldSpecs = objectTypeDefinition.getFieldDefinitions().stream()
@@ -50,12 +65,20 @@ public class TypeMapper {
     }
 
 
-    private static FieldSpec convert(FieldDefinition fieldDefinition, String packageName) {
+    /**
+     *
+     * @param fieldDefinition
+     * @param packageName
+     * @return
+     */
+    private FieldSpec convert(FieldDefinition fieldDefinition, String packageName) {
         logger.debug("fieldDefinition: {}", fieldDefinition);
 
         com.squareup.javapoet.TypeName typeName = typeName(fieldDefinition.getType(), packageName);
 
-        FieldSpec fieldSpec = FieldSpec.builder(typeName, fieldDefinition.getName(), Modifier.PRIVATE).build();
+        FieldSpec fieldSpec = FieldSpec.builder(typeName, fieldDefinition.getName(), Modifier.PRIVATE)
+                .addJavadoc("GraphQL: " + fieldDefinition.getType() + System.getProperty("line.separator"))
+                .build();
 
         logger.debug("fieldSpec: {}", fieldSpec);
         return fieldSpec;
@@ -66,7 +89,7 @@ public class TypeMapper {
      * @param type
      * @return
      */
-    public static com.squareup.javapoet.TypeName typeName(Type type, String packageName) {
+    public com.squareup.javapoet.TypeName typeName(Type type, String packageName) {
         com.squareup.javapoet.TypeName typeName;
 
         if (type instanceof TypeName) {
@@ -101,23 +124,38 @@ public class TypeMapper {
         return typeName;
     }
 
-    private static com.squareup.javapoet.TypeName defineListType(String packageName, ListType aType) {
+
+    /**
+     *
+     * @param packageName
+     * @param aType
+     * @return
+     */
+    private com.squareup.javapoet.TypeName defineListType(String packageName, ListType aType) {
         com.squareup.javapoet.TypeName typeName;
-        ListType listType = aType;
-        com.squareup.javapoet.TypeName parameterizedType = typeName(listType.getType(), packageName);
+        com.squareup.javapoet.TypeName parameterizedType = typeName(aType.getType(), packageName);
         typeName = ParameterizedTypeName.get(
                 ClassName.get("java.util", "List"),
                 parameterizedType);
         return typeName;
     }
 
-    private static com.squareup.javapoet.TypeName defineTypeName(String packageName, TypeName aType) {
+
+    /**
+     *
+     * @param packageName
+     * @param aType
+     * @return
+     */
+    private com.squareup.javapoet.TypeName defineTypeName(String packageName, TypeName aType) {
         com.squareup.javapoet.TypeName typeName;
-        TypeName typeNameObj = aType;
-        String aTypeName = typeNameObj.getName();
+        String aTypeName = aType.getName();
         typeName = BasicScalarMapper.convert(aTypeName);
         if (typeName == null) {
-            typeName = ClassName.get(packageName, aTypeName);
+            typeName = customScalarMapper.convert(aTypeName);
+            if(typeName == null) {
+                typeName = ClassName.get(packageName, aTypeName);
+            }
         }
         return typeName;
     }

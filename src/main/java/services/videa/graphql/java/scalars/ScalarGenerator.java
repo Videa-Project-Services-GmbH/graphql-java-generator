@@ -55,12 +55,12 @@ public class ScalarGenerator implements GeneratorInterface {
     private void generate(ScalarTypeDefinition scalar) {
         logger.debug("scalar: {}", scalar);
 
-        ClassName className = BasicScalarMapper.convert(scalar.getName());
+/*        ClassName className = BasicScalarMapper.convert(scalar.getName());
         if (className == null) {
             // Other than basic scalar type are custom scalars and they are generated.
             TypeSpec typeSpec = CustomScalarMapper.convert(scalar);
             fileCreator.write(typeSpec);
-        }
+        }*/
     }
 
 
@@ -69,7 +69,7 @@ public class ScalarGenerator implements GeneratorInterface {
      */
     @Override
     public void generate() {
-        scalars.forEach((key, element) -> generate(element));
+        //scalars.forEach((key, element) -> generate(element));
     }
 
 
