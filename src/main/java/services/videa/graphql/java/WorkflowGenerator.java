@@ -1,7 +1,7 @@
 package services.videa.graphql.java;
 
 import services.videa.graphql.java.enums.EnumGenerator;
-import services.videa.graphql.java.generation.*;
+import services.videa.graphql.java.inputs.InputGenerator;
 import services.videa.graphql.java.interfaces.InterfaceGenerator;
 import services.videa.graphql.java.scalars.ScalarGenerator;
 
@@ -18,6 +18,6 @@ public class WorkflowGenerator {
         EnumGenerator enumGenerator = new EnumGenerator(schemaParser.enums(), targetFolder, targetPackage);
         InterfaceGenerator interfaceGenerator = new InterfaceGenerator(
                 schemaParser.interfaces(), targetFolder, targetPackage);
-        NodeGenerator nodeGenerator = new NodeGenerator(schemaParser.inputTypes(), targetFolder, targetPackage);
+        InputGenerator inputGenerator = new InputGenerator(schemaParser.inputTypes(), targetFolder, targetPackage);
     }
 }
