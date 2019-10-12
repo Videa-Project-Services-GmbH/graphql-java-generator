@@ -60,7 +60,9 @@ public class InputMapper {
             className = ClassName.get(packageName, typeName);
         }
 
-        FieldSpec fieldSpec = FieldSpec.builder(className, inputValueDefinition.getName(), Modifier.PRIVATE).build();
+        FieldSpec fieldSpec = FieldSpec.builder(className, inputValueDefinition.getName(), Modifier.PRIVATE)
+                .addJavadoc("GraphQL: " + inputValueDefinition.getType() + System.getProperty("line.separator"))
+                .build();
 
         logger.debug("fieldSpec: {}", fieldSpec);
         return fieldSpec;
