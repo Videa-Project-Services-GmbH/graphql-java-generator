@@ -3,17 +3,17 @@ package services.videa.graphql.java.consumer;
 import graphql.language.ObjectTypeDefinition;
 import org.junit.Before;
 import org.junit.Test;
-import services.videa.graphql.java.pojos.GraphQLSchemaParser;
+import services.videa.graphql.java.GqlSchemaParser;
 
 public class QueryGeneratorTest {
 
     private static final String PACKAGE_NAME = "de.teilautos.zemtu.graphql.types";
 
-    private GraphQLSchemaParser schemaParser;
+    private GqlSchemaParser schemaParser;
 
     @Before
     public void setUp() {
-        schemaParser = new GraphQLSchemaParser("/zemtu.gql");
+        schemaParser = new GqlSchemaParser("/zemtu.gql");
     }
 
     @Test

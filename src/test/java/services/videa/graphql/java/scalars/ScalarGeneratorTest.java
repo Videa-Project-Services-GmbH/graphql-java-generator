@@ -17,9 +17,9 @@
  *  THE SOFTWARE.
  */
 
-package services.videa.graphql.java.generation;
+package services.videa.graphql.java.scalars;
 
-import graphql.language.EnumTypeDefinition;
+import org.junit.Before;
 import org.junit.Test;
 import services.videa.graphql.java.GqlSchemaParser;
 
@@ -28,39 +28,24 @@ import java.util.Arrays;
 
 import static org.junit.Assert.assertTrue;
 
-public class EnumGeneratorTest {
+public class ScalarGeneratorTest {
 
-    private static final String FILE_PATH = "./src/test/java/services/videa/graphql/java/generation/types/";
+    private static final String SRC_FOLDER = "./src/main/generated";
+    private static final String PACKAGE_NAME = "services.videa.graphql.java.types";
+    private static final String FILE_PATH =SRC_FOLDER + "/" + PACKAGE_NAME.replace(".", "/");
 
-    @Test
-    public void generateReservationPurposeEnum() {
+    private ScalarGenerator scalarGenerator;
+
+    @Before
+    public void setUp() {
         GqlSchemaParser schemaParser = new GqlSchemaParser("/zemtu-test.gql");
-        EnumGenerator enumGenerator = new EnumGenerator(schemaParser.enums(),
-                "./src/test/java", "services.videa.graphql.java.generation.types");
-
-        EnumTypeDefinition reservationPurposeEnum = schemaParser.enums().get("ReservationPurposeEnum");
-        enumGenerator.generate(reservationPurposeEnum);
-
-        File file = new File(
-                "./src/test/java/services/videa/graphql/java/generation/types/ReservationPurposeEnum.java");
-        String filePath = file.getPath();
-        System.out.println(filePath);
-
-        assertTrue("Datei wurde nicht generiert.", file.exists());
-
-        boolean delete = file.delete();
-        assertTrue("Datei wurde nicht gelöscht", delete);
-
+        scalarGenerator = new ScalarGenerator(schemaParser.scalars(), SRC_FOLDER, PACKAGE_NAME);
     }
 
 
     @Test
-    public void allEnums() {
-        GqlSchemaParser schemaParser = new GqlSchemaParser("/zemtu-test.gql");
-        EnumGenerator enumGenerator = new EnumGenerator(schemaParser.enums(),
-                "./src/test/java", "services.videa.graphql.java.generation.types");
-        enumGenerator.generate();
-
+    public void all() {
+        scalarGenerator.generate();
         deleteTypes();
     }
 
@@ -71,6 +56,5 @@ public class EnumGeneratorTest {
             Arrays.stream(files).forEach(File::delete);
         }
     }
-
 
 }

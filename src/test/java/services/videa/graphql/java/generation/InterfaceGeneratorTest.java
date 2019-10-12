@@ -20,13 +20,13 @@
 package services.videa.graphql.java.generation;
 
 import org.junit.Test;
-import services.videa.graphql.java.pojos.GraphQLSchemaParser;
+import services.videa.graphql.java.GqlSchemaParser;
 
 public class InterfaceGeneratorTest {
 
     @Test
     public void allInterfaces() {
-        GraphQLSchemaParser schemaParser = new GraphQLSchemaParser("/zemtu-test.gql");
+        GqlSchemaParser schemaParser = new GqlSchemaParser("/zemtu-test.gql");
         InterfaceGenerator interfaceGenerator = new InterfaceGenerator(schemaParser.interfaces(),
                 "./src/test/java", "services.videa.graphql.java.generation.types");
         interfaceGenerator.generate();

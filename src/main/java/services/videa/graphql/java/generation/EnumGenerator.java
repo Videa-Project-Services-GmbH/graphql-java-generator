@@ -24,6 +24,7 @@ import com.squareup.javapoet.TypeSpec;
 import graphql.language.EnumTypeDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import services.videa.graphql.java.AbstractGenerator;
 
 import java.util.Map;
 
@@ -50,13 +51,13 @@ public class EnumGenerator extends AbstractGenerator {
         builder.addJavadoc(comment(enumTypeDefinition.getDescription()));
 
         TypeSpec typeSpec = builder.build();
-        JavaFile javaFile = JavaFile.builder(targetPackage, typeSpec).build();
+        JavaFile javaFile = JavaFile.builder(packageName, typeSpec).build();
         writeModel(javaFile);
     }
 
 
     @Override
-    void generate() {
+    public void generate() {
         enums.forEach((key, element) -> generate(element));
     }
 

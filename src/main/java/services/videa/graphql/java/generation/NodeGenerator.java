@@ -30,62 +30,73 @@ import graphql.language.Type;
 import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import services.videa.graphql.java.AbstractGenerator;
 
 import javax.lang.model.element.Modifier;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class NodeGenerator extends AbstractGenerator {
     private static Logger logger = LoggerFactory.getLogger(NodeGenerator.class);
 
+    private Map<String, InputObjectTypeDefinition> inputs;
 
-    public NodeGenerator(String targetFolder, String targetPackage) {
+
+    public NodeGenerator(Map<String, InputObjectTypeDefinition> inputs, String targetFolder, String targetPackage) {
         super(targetFolder, targetPackage);
+        this.inputs = inputs;
     }
 
 
-    public void generate(Node node) {
+    void generate(Node node) {
         logger.debug("node={}", node);
 
-        List<FieldSpec> fieldSpecs;
+        String name = null;
+        String comment = null;
+        List<FieldSpec> fieldSpecs = null;
         if (node instanceof InputObjectTypeDefinition) {
             InputObjectTypeDefinition typeDefinition = (InputObjectTypeDefinition) node;
+
+            name = typeDefinition.getName();
+            comment = comment(typeDefinition.getDescription());
+
             List<InputValueDefinition> valueDefinitions = typeDefinition.getInputValueDefinitions();
-            fieldSpecs = valueDefinitions.stream().map(valueDefinition -> {
-                Type type = valueDefinition.getType();
-                logger.debug("type={}", type);
+            fieldSpecs = valueDefinitions.stream().map(this::convert).collect(Collectors.toList());
 
-                String extractTypeName = extractTypeName(type);
-                Class<?> aClass = searchClass(extractTypeName);
-                if (aClass == null) {
-                    generate(valueDefinition);
-                    aClass = searchClass(extractTypeName);
-                }
-                TypeName typeName = TypeName.get(aClass);
-                FieldSpec fieldSpec = FieldSpec.builder(
-                        typeName, valueDefinition.getName(), Modifier.PRIVATE).build();
+        } else if (node instanceof InputValueDefinition) {
+            InputValueDefinition valueDefinition = (InputValueDefinition) node;
+            name = valueDefinition.getName();
+            comment = comment(valueDefinition.getDescription());
 
-                return fieldSpec;
-            }).collect(Collectors.toList());
-
-            String comment = extractComment(typeDefinition.getDescription());
-            TypeSpec typeSpec = TypeSpec.classBuilder(typeDefinition.getName())
-                    .addJavadoc(comment)
-                    .addAnnotation(Data.class)
-                    .addModifiers(Modifier.PUBLIC)
-                    .addFields(fieldSpecs)
-                    .build();
-
-            JavaFile javaFile = JavaFile.builder(targetPackage, typeSpec).build();
-            writeModel(javaFile);
-
+            //valueDefinition.getChildren().stream().map()
         }
 
+        TypeSpec typeSpec = TypeSpec.classBuilder(name)
+                .addJavadoc(comment)
+                .addAnnotation(Data.class)
+                .addModifiers(Modifier.PUBLIC)
+                .addFields(fieldSpecs)
+                .build();
 
-        List<Node> children = node.getChildren();
-//        children.forEach(child -> generate(child));
+        JavaFile javaFile = JavaFile.builder(packageName, typeSpec).build();
+        writeModel(javaFile);
 
+    }
 
+    private FieldSpec convert(InputValueDefinition valueDefinition) {
+        Type type = valueDefinition.getType();
+        logger.debug("type={}", type);
+
+        String extractTypeName = extractTypeName(type);
+        Class<?> aClass = searchClass(extractTypeName);
+        if (aClass == null) {
+            generate(valueDefinition);
+            aClass = searchClass(extractTypeName);
+        }
+        TypeName typeName = TypeName.get(aClass);
+
+        return FieldSpec.builder(typeName, valueDefinition.getName(), Modifier.PRIVATE).build();
     }
 
 
@@ -96,7 +107,7 @@ public class NodeGenerator extends AbstractGenerator {
      * @return
      */
     Class<?> searchClass(String simpleName) {
-
+/*
         Class<?> aClass = ScalarMapper.convert(simpleName);
         if (aClass != null) {
             logger.debug("aClass found: {}", aClass);
@@ -115,12 +126,15 @@ public class NodeGenerator extends AbstractGenerator {
                 logger.debug("looked for: {}", e.getMessage());
             }
         }
+
+ */
         return null;
     }
 
 
     @Override
-    void generate() {
-
+    public void generate() {
+        inputs.forEach((key, value) -> generate(value));
     }
+
 }

@@ -19,11 +19,12 @@
 
 package services.videa.graphql.java.generation;
 
-import graphql.language.EnumTypeDefinition;
 import graphql.language.InputObjectTypeDefinition;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import services.videa.graphql.java.pojos.GraphQLSchemaParser;
+import services.videa.graphql.java.GqlSchemaParser;
+import services.videa.graphql.java.scalars.ScalarGenerator;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -38,24 +39,25 @@ public class NodeGeneratorTest {
     private static final String PACKAGE_NAME = "services.videa.graphql.java.generation.types";
     private static final String FILE_PATH = "./src/test/java/services/videa/graphql/java/generation/types/";
 
-    private GraphQLSchemaParser schemaParser;
+    private GqlSchemaParser schemaParser;
     private ScalarGenerator scalarGenerator;
     private EnumGenerator enumGenerator;
     private InterfaceGenerator interfaceGenerator;
-    private InputGenerator inputGenerator;
 
-    private NodeGenerator nodeGenerator = new NodeGenerator(SRC_FOLDER, PACKAGE_NAME);
+    private NodeGenerator nodeGenerator;
 
     @Before
     public void setUp() {
-        schemaParser = new GraphQLSchemaParser("/zemtu-test.gql");
+        schemaParser = new GqlSchemaParser("/zemtu-test.gql");
         scalarGenerator = new ScalarGenerator(schemaParser.scalars(), SRC_FOLDER, PACKAGE_NAME);
         enumGenerator = new EnumGenerator(schemaParser.enums(), SRC_FOLDER, PACKAGE_NAME);
         interfaceGenerator = new InterfaceGenerator(schemaParser.interfaces(), SRC_FOLDER, PACKAGE_NAME);
-        inputGenerator = new InputGenerator(schemaParser.inputTypes(),
-                schemaParser.enums(), schemaParser.scalars(), SRC_FOLDER, PACKAGE_NAME);
+        nodeGenerator = new NodeGenerator(schemaParser.inputTypes(), SRC_FOLDER, PACKAGE_NAME);
     }
 
+    @After
+    public void tearDown() {
+    }
 
     @Test
     public void searchClassString() {
@@ -79,6 +81,21 @@ public class NodeGeneratorTest {
 
         InputObjectTypeDefinition reservationCreateInput = schemaParser.inputTypes().get("ReservationCreateInput");
         nodeGenerator.generate(reservationCreateInput);
+
+        File file = new File(FILE_PATH + "ReservationCreateInput.java");
+        assertTrue("file exists", file.exists());
+
+        deleteTypes();
+    }
+
+
+    @Test
+    public void generate() {
+        scalarGenerator.generate();
+        enumGenerator.generate();
+        interfaceGenerator.generate();
+
+        nodeGenerator.generate();
 
         File file = new File(FILE_PATH + "ReservationCreateInput.java");
         assertTrue("file exists", file.exists());

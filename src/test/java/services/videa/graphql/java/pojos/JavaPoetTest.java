@@ -81,4 +81,18 @@ public class JavaPoetTest {
         javaFile.writeTo(System.out);
     }
 
+
+    @Test
+    public void className() throws IOException {
+        ClassName className = ClassName.get(
+                "services.videa.graphql.java.types", "JavaPoetTest");
+        FieldSpec fieldSpec = FieldSpec.builder(className, "field", Modifier.PRIVATE).build();
+
+        TypeSpec typeSpec = TypeSpec.classBuilder("Feld")
+                .addField(fieldSpec)
+                .build();
+
+        JavaFile javaFile = JavaFile.builder("services.videa.graphql.java.pojos", typeSpec).build();
+        javaFile.writeTo(System.out);
+    }
 }

@@ -22,6 +22,7 @@ package services.videa.graphql.java.generation;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
 import graphql.language.InterfaceTypeDefinition;
+import services.videa.graphql.java.AbstractGenerator;
 
 import java.util.Map;
 
@@ -39,13 +40,13 @@ public class InterfaceGenerator extends AbstractGenerator {
         TypeSpec.Builder builder = TypeSpec.interfaceBuilder(interfaceTypeDefinition.getName())
                 .addJavadoc(comment(interfaceTypeDefinition.getDescription()));
 
-        JavaFile javaFile = JavaFile.builder(targetPackage, builder.build()).build();
+        JavaFile javaFile = JavaFile.builder(packageName, builder.build()).build();
         writeModel(javaFile);
     }
 
 
     @Override
-    void generate() {
+    public void generate() {
         interfaces.forEach((key, element) -> generate(element));
     }
 }
