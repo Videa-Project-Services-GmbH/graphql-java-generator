@@ -17,31 +17,44 @@
  *  THE SOFTWARE.
  */
 
-package services.videa.graphql.java.generation;
+package services.videa.graphql.java.interfaces;
 
-import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
 import graphql.language.InterfaceTypeDefinition;
-import services.videa.graphql.java.AbstractGenerator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import services.videa.graphql.java.FileCreator;
+import services.videa.graphql.java.GeneratorInterface;
 
 import java.util.Map;
 
-public class InterfaceGenerator extends AbstractGenerator {
+
+/**
+ *
+ */
+public class InterfaceGenerator implements GeneratorInterface {
+    private static Logger logger = LoggerFactory.getLogger(InterfaceGenerator.class);
 
     private Map<String, InterfaceTypeDefinition> interfaces;
+    private FileCreator fileCreator;
 
-    public InterfaceGenerator(Map<String, InterfaceTypeDefinition> interfaces, String targetFolder, String targetPackage) {
-        super(targetFolder, targetPackage);
+    public InterfaceGenerator(Map<String, InterfaceTypeDefinition> interfaces,
+                              String generationFolder, String packageName) {
         this.interfaces = interfaces;
+        fileCreator = fileCreator(generationFolder, packageName);
     }
 
 
-    void generate(InterfaceTypeDefinition interfaceTypeDefinition) {
-        TypeSpec.Builder builder = TypeSpec.interfaceBuilder(interfaceTypeDefinition.getName())
-                .addJavadoc(comment(interfaceTypeDefinition.getDescription()));
+    /**
+     *
+     * @param interfaceTypeDefinition
+     */
+    private void generate(InterfaceTypeDefinition interfaceTypeDefinition) {
+        logger.debug("interfaceTypeDefinition: {}", interfaceTypeDefinition);
 
-        JavaFile javaFile = JavaFile.builder(packageName, builder.build()).build();
-        writeModel(javaFile);
+        TypeSpec typeSpec = InterfaceMapper.convert(interfaceTypeDefinition);
+
+        fileCreator.write(typeSpec);
     }
 
 
@@ -49,4 +62,6 @@ public class InterfaceGenerator extends AbstractGenerator {
     public void generate() {
         interfaces.forEach((key, element) -> generate(element));
     }
+
+
 }

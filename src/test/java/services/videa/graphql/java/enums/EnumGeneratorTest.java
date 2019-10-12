@@ -17,20 +17,44 @@
  *  THE SOFTWARE.
  */
 
-package services.videa.graphql.java.generation;
+package services.videa.graphql.java.enums;
 
+import org.junit.Before;
 import org.junit.Test;
 import services.videa.graphql.java.GqlSchemaParser;
+import services.videa.graphql.java.enums.EnumGenerator;
 
-public class InterfaceGeneratorTest {
+import java.io.File;
+import java.util.Arrays;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+public class EnumGeneratorTest {
+
+    private static final String SRC_FOLDER = "./src/main/generated";
+    private static final String PACKAGE_NAME = "services.videa.graphql.java.types";
+    private static final String FILE_PATH = SRC_FOLDER + "/" + PACKAGE_NAME.replace(".", "/");
+
+    private EnumGenerator enumGenerator;
+
+    @Before
+    public void setUp() {
+        GqlSchemaParser schemaParser = new GqlSchemaParser("/zemtu-test.gql");
+        enumGenerator = new EnumGenerator(schemaParser.enums(), SRC_FOLDER, PACKAGE_NAME);
+    }
+
 
     @Test
-    public void allInterfaces() {
-        GqlSchemaParser schemaParser = new GqlSchemaParser("/zemtu-test.gql");
-        InterfaceGenerator interfaceGenerator = new InterfaceGenerator(schemaParser.interfaces(),
-                "./src/test/java", "services.videa.graphql.java.generation.types");
-        interfaceGenerator.generate();
+    public void allEnums() {
+        enumGenerator.generate();
 
-        // TODO assert result
+        File[] files = new File(FILE_PATH).listFiles();
+        assertNotNull(files);
+        assertTrue(files.length >= 1);
+
+        Arrays.stream(files).forEach(File::delete);
     }
+
+
 }
