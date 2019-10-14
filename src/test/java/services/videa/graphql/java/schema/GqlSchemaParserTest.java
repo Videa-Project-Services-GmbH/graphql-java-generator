@@ -17,7 +17,7 @@
  *  THE SOFTWARE.
  */
 
-package services.videa.graphql.java;
+package services.videa.graphql.java.schema;
 
 import graphql.language.InputObjectTypeDefinition;
 import graphql.language.ObjectTypeDefinition;
