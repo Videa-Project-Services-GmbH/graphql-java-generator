@@ -8,9 +8,11 @@ import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.videa.graphql.java.scalars.BasicScalarMapper;
+import services.videa.graphql.java.scalars.CustomScalarMapper;
 
 import javax.lang.model.element.Modifier;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -20,9 +22,11 @@ import java.util.stream.Collectors;
 public class InputMapper {
     private static Logger logger = LoggerFactory.getLogger(InputMapper.class);
 
+    private CustomScalarMapper customScalarMapper;
     private String packageName;
 
-    public InputMapper(String packageName) {
+    public InputMapper(Map<String, ScalarTypeDefinition> scalars, String packageName) {
+        customScalarMapper = new CustomScalarMapper(scalars);
         this.packageName = packageName;
     }
 
@@ -57,7 +61,10 @@ public class InputMapper {
 
         ClassName className = BasicScalarMapper.convert(typeName);
         if (className == null) {
-            className = ClassName.get(packageName, typeName);
+            className = customScalarMapper.convert(typeName);
+            if(className == null) {
+                className = ClassName.get(packageName, typeName);
+            }
         }
 
         FieldSpec fieldSpec = FieldSpec.builder(className, inputValueDefinition.getName(), Modifier.PRIVATE)

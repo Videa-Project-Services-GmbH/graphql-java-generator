@@ -21,9 +21,9 @@ package services.videa.graphql.java.interfaces;
 
 import org.junit.Before;
 import org.junit.Test;
-import services.videa.graphql.java.GqlSchemaParser;
-import services.videa.graphql.java.enums.EnumGenerator;
-import services.videa.graphql.java.interfaces.InterfaceGenerator;
+import services.videa.graphql.java.AbstractGraphQLJavaTest;
+import services.videa.graphql.java.schema.GqlSchemaLoader;
+import services.videa.graphql.java.schema.GqlSchemaParser;
 
 import java.io.File;
 import java.util.Arrays;
@@ -31,7 +31,7 @@ import java.util.Arrays;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-public class InterfaceGeneratorTest {
+public class InterfaceGeneratorTest extends AbstractGraphQLJavaTest {
 
     private static final String SRC_FOLDER = "./src/main/generated";
     private static final String PACKAGE_NAME = "services.videa.graphql.java.types";
@@ -41,8 +41,9 @@ public class InterfaceGeneratorTest {
 
     @Before
     public void setUp() {
-        GqlSchemaParser schemaParser = new GqlSchemaParser("/zemtu-test.gql");
-        interfaceGenerator = new InterfaceGenerator(schemaParser.interfaces(), SRC_FOLDER, PACKAGE_NAME);
+        super.setUp();
+
+        interfaceGenerator = new InterfaceGenerator(gqlSchemaParser.interfaces(), SRC_FOLDER, PACKAGE_NAME);
     }
 
 

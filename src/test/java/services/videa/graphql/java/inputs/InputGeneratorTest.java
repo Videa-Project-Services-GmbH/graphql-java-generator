@@ -19,47 +19,61 @@
 
 package services.videa.graphql.java.inputs;
 
+import graphql.language.InputObjectTypeDefinition;
 import org.junit.Before;
 import org.junit.Test;
-import services.videa.graphql.java.GqlSchemaParser;
+import services.videa.graphql.java.AbstractGraphQLJavaTest;
+import services.videa.graphql.java.schema.GqlSchemaLoader;
+import services.videa.graphql.java.schema.GqlSchemaParser;
 import services.videa.graphql.java.enums.EnumGenerator;
 import services.videa.graphql.java.interfaces.InterfaceGenerator;
-import services.videa.graphql.java.scalars.ScalarGenerator;
 
 import java.io.File;
 import java.util.Arrays;
 
 import static org.junit.Assert.*;
 
-public class InputGeneratorTest {
+public class InputGeneratorTest extends AbstractGraphQLJavaTest {
 
     private static final String SRC_FOLDER = "./src/main/generated";
     private static final String PACKAGE_NAME = "services.videa.graphql.java.types";
     private static final String FILE_PATH = SRC_FOLDER + "/" + PACKAGE_NAME.replace(".", "/");
 
-    private ScalarGenerator scalarGenerator;
     private EnumGenerator enumGenerator;
-    private InterfaceGenerator interfaceGenerator;
 
     private InputGenerator inputGenerator;
 
     @Before
     public void setUp() {
-        GqlSchemaParser schemaParser = new GqlSchemaParser("/zemtu-test.gql");
+        super.setUp();
 
-        scalarGenerator = new ScalarGenerator(schemaParser.scalars(), SRC_FOLDER, PACKAGE_NAME);
-        enumGenerator = new EnumGenerator(schemaParser.enums(), SRC_FOLDER, PACKAGE_NAME);
-        interfaceGenerator = new InterfaceGenerator(schemaParser.interfaces(), SRC_FOLDER, PACKAGE_NAME);
+        enumGenerator = new EnumGenerator(gqlSchemaParser.enums(), SRC_FOLDER, PACKAGE_NAME);
 
-        inputGenerator = new InputGenerator(schemaParser.inputTypes(), SRC_FOLDER, PACKAGE_NAME);
+        inputGenerator = new InputGenerator(gqlSchemaParser.inputTypes(), gqlSchemaParser.scalars(),
+                SRC_FOLDER, PACKAGE_NAME);
     }
 
 
     @Test
-    public void allInputs() {
-        scalarGenerator.generate();
+    public void reservationCreateInput() {
         enumGenerator.generate();
-        inputGenerator.generate();
+
+        InputObjectTypeDefinition typeDefinition = gqlSchemaParser.inputTypes().get("ReservationCreateInput");
+        inputGenerator.generate(typeDefinition);
+
+        File[] files = new File(FILE_PATH).listFiles();
+        assertNotNull(files);
+        assertTrue(files.length >= 1);
+
+        Arrays.stream(files).forEach(File::delete);
+    }
+
+
+
+
+    @Test
+    public void allInputs() {
+        enumGenerator.generate();
         inputGenerator.generate();
 
         File[] files = new File(FILE_PATH).listFiles();

@@ -17,7 +17,7 @@
  *  THE SOFTWARE.
  */
 
-package services.videa.graphql.java;
+package services.videa.graphql.java.schema;
 
 import graphql.language.*;
 import graphql.schema.idl.SchemaParser;
@@ -26,7 +26,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,17 +39,12 @@ public class GqlSchemaParser {
     private Map<String, EnumTypeDefinition> enums;
     private Map<String, InterfaceTypeDefinition> interfaces;
 
-    public GqlSchemaParser(String schemaFileClassPath) {
-        logger.trace("schemaFileClassPath={}", schemaFileClassPath);
+    public GqlSchemaParser(File gqlSchema) {
+        logger.debug("gqlSchema: {}", gqlSchema);
 
         SchemaParser schemaParser = new SchemaParser();
-        URL url = getClass().getResource(schemaFileClassPath);
-        String path = url.getFile();
-        File file = new File(path);
-
-        typeRegistry = schemaParser.parse(file);
-
-        logger.trace("typeRegistry={}", typeRegistry);
+        typeRegistry = schemaParser.parse(gqlSchema);
+        logger.debug("typeRegistry: {}", typeRegistry);
     }
 
     /**

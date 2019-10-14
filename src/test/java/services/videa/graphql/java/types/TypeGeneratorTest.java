@@ -22,11 +22,12 @@ package services.videa.graphql.java.types;
 import graphql.language.ObjectTypeDefinition;
 import org.junit.Before;
 import org.junit.Test;
-import services.videa.graphql.java.GqlSchemaParser;
+import services.videa.graphql.java.AbstractGraphQLJavaTest;
+import services.videa.graphql.java.schema.GqlSchemaLoader;
+import services.videa.graphql.java.schema.GqlSchemaParser;
 import services.videa.graphql.java.enums.EnumGenerator;
 import services.videa.graphql.java.inputs.InputGenerator;
 import services.videa.graphql.java.interfaces.InterfaceGenerator;
-import services.videa.graphql.java.scalars.ScalarGenerator;
 
 import java.io.File;
 import java.util.Arrays;
@@ -34,15 +35,12 @@ import java.util.Arrays;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-public class TypeGeneratorTest {
+public class TypeGeneratorTest extends AbstractGraphQLJavaTest {
 
     private static final String SRC_FOLDER = "./src/main/generated";
     private static final String PACKAGE_NAME = "services.videa.graphql.java.types";
     private static final String FILE_PATH = SRC_FOLDER + "/" + PACKAGE_NAME.replace(".", "/");
 
-    private GqlSchemaParser schemaParser;
-
-    private ScalarGenerator scalarGenerator;
     private EnumGenerator enumGenerator;
     private InterfaceGenerator interfaceGenerator;
     private InputGenerator inputGenerator;
@@ -51,26 +49,25 @@ public class TypeGeneratorTest {
 
     @Before
     public void setUp() {
-        schemaParser = new GqlSchemaParser("/zemtu-test.gql");
+        super.setUp();
 
-        scalarGenerator = new ScalarGenerator(schemaParser.scalars(), SRC_FOLDER, PACKAGE_NAME);
-        enumGenerator = new EnumGenerator(schemaParser.enums(), SRC_FOLDER, PACKAGE_NAME);
-        interfaceGenerator = new InterfaceGenerator(schemaParser.interfaces(), SRC_FOLDER, PACKAGE_NAME);
-        inputGenerator = new InputGenerator(schemaParser.inputTypes(), SRC_FOLDER, PACKAGE_NAME);
+        enumGenerator = new EnumGenerator(gqlSchemaParser.enums(), SRC_FOLDER, PACKAGE_NAME);
+        interfaceGenerator = new InterfaceGenerator(gqlSchemaParser.interfaces(), SRC_FOLDER, PACKAGE_NAME);
+        inputGenerator = new InputGenerator(gqlSchemaParser.inputTypes(), gqlSchemaParser.scalars(),
+                SRC_FOLDER, PACKAGE_NAME);
 
-        typeGenerator = new TypeGenerator(schemaParser.objectTypes(),
-                schemaParser.scalars(), SRC_FOLDER, PACKAGE_NAME);
+        typeGenerator = new TypeGenerator(gqlSchemaParser.objectTypes(),
+                gqlSchemaParser.scalars(), SRC_FOLDER, PACKAGE_NAME);
     }
 
 
     @Test
     public void userNode() {
-        scalarGenerator.generate();
         enumGenerator.generate();
         inputGenerator.generate();
         interfaceGenerator.generate();
 
-        ObjectTypeDefinition userNode = schemaParser.objectTypes().get("UserNode");
+        ObjectTypeDefinition userNode = gqlSchemaParser.objectTypes().get("UserNode");
         typeGenerator.generate(userNode);
 
         File[] files = new File(FILE_PATH).listFiles();
@@ -83,15 +80,14 @@ public class TypeGeneratorTest {
 
     @Test
     public void dataStoreNode() {
-        scalarGenerator.generate();
         enumGenerator.generate();
         inputGenerator.generate();
         interfaceGenerator.generate();
 
-        ObjectTypeDefinition ownerNode = schemaParser.objectTypes().get("OwnerNode");
+        ObjectTypeDefinition ownerNode = gqlSchemaParser.objectTypes().get("OwnerNode");
         typeGenerator.generate(ownerNode);
 
-        ObjectTypeDefinition userNode = schemaParser.objectTypes().get("DataStoreNode");
+        ObjectTypeDefinition userNode = gqlSchemaParser.objectTypes().get("DataStoreNode");
         typeGenerator.generate(userNode);
 
         File[] files = new File(FILE_PATH).listFiles();
@@ -104,7 +100,6 @@ public class TypeGeneratorTest {
 
     @Test
     public void allTypes() {
-        scalarGenerator.generate();
         enumGenerator.generate();
         inputGenerator.generate();
         interfaceGenerator.generate();

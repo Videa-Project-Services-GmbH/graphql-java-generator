@@ -25,7 +25,8 @@ import graphql.language.ScalarTypeDefinition;
 import graphql.language.TypeDefinition;
 import org.junit.Before;
 import org.junit.Test;
-import services.videa.graphql.java.GqlSchemaParser;
+import services.videa.graphql.java.schema.GqlSchemaLoader;
+import services.videa.graphql.java.schema.GqlSchemaParser;
 
 import java.util.Map;
 
@@ -37,14 +38,14 @@ public class GqlSchemaParserTest {
 
     @Before
     public void setUp() {
-        gqlSchemaParser = new GqlSchemaParser("/zemtu.gql");
+        java.io.File file = GqlSchemaLoader.load("graphql-java-test.gql", "");
+        gqlSchemaParser = new GqlSchemaParser(file);
     }
 
 
     @Test
     public void parseReservationCreateInput() {
-        GqlSchemaParser schemaParser = new GqlSchemaParser("/zemtu-test.gql");
-        InputObjectTypeDefinition reservationCreateInput = schemaParser.inputTypes().get("ReservationCreateInput");
+        InputObjectTypeDefinition reservationCreateInput = gqlSchemaParser.inputTypes().get("ReservationCreateInput");
         assertNotNull(reservationCreateInput);
         assertEquals("Kein Input mit dem Namen '" + reservationCreateInput.getName()
                 + "' im SchemaParser gefunden.", "ReservationCreateInput", reservationCreateInput.getName());

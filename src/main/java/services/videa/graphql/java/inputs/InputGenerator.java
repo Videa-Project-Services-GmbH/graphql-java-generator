@@ -21,6 +21,7 @@ package services.videa.graphql.java.inputs;
 
 import com.squareup.javapoet.TypeSpec;
 import graphql.language.InputObjectTypeDefinition;
+import graphql.language.ScalarTypeDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.videa.graphql.java.FileCreator;
@@ -37,15 +38,17 @@ public class InputGenerator implements GeneratorInterface {
     private static Logger logger = LoggerFactory.getLogger(InputGenerator.class);
 
     private Map<String, InputObjectTypeDefinition> inputs;
+    private Map<String, ScalarTypeDefinition> scalars;
     private String packageName;
     private InputMapper inputMapper;
     private FileCreator fileCreator;
 
 
-    public InputGenerator(Map<String, InputObjectTypeDefinition> inputs, String generationFolder, String packageName) {
+    public InputGenerator(Map<String, InputObjectTypeDefinition> inputs, Map<String, ScalarTypeDefinition> scalars,
+                          String generationFolder, String packageName) {
         this.inputs = inputs;
         this.packageName = packageName;
-        inputMapper = new InputMapper(packageName);
+        inputMapper = new InputMapper(scalars, packageName);
         fileCreator = fileCreator(generationFolder, packageName);
     }
 
@@ -54,7 +57,7 @@ public class InputGenerator implements GeneratorInterface {
      *
      * @param inputObjectTypeDefinition
      */
-    private void generate(InputObjectTypeDefinition inputObjectTypeDefinition) {
+    public void generate(InputObjectTypeDefinition inputObjectTypeDefinition) {
         logger.debug("inputObjectTypeDefinition: {}", inputObjectTypeDefinition);
 
         TypeSpec typeSpec = inputMapper.convert(inputObjectTypeDefinition);
