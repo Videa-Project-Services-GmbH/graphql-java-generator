@@ -10,6 +10,7 @@
 
 package services.videa.graphql.java;
 
+import services.videa.graphql.java.endpoints.MutationGenerator;
 import services.videa.graphql.java.endpoints.QueryGenerator;
 import services.videa.graphql.java.enums.EnumGenerator;
 import services.videa.graphql.java.inputs.InputGenerator;
@@ -63,6 +64,11 @@ public class GqlJavaGenerator {
         QueryGenerator queryGenerator = new QueryGenerator(
                 gqlSchemaParser.objectTypes().get("Query"), gqlSchemaParser.scalars(), generationFolder, packageName);
         queryGenerator.generate();
+
+        MutationGenerator mutationGenerator = new MutationGenerator(
+                gqlSchemaParser.objectTypes().get("Mutation"), gqlSchemaParser.scalars(), generationFolder, packageName);
+        mutationGenerator.generate();
+
     }
 
 }

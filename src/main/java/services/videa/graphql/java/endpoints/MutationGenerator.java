@@ -10,19 +10,81 @@
 
 package services.videa.graphql.java.endpoints;
 
-import services.videa.graphql.java.FileCreator;
-import services.videa.graphql.java.GeneratorInterface;
+import com.squareup.javapoet.ParameterSpec;
+import graphql.language.ObjectTypeDefinition;
+import graphql.language.ScalarTypeDefinition;
 
-public class MutationGenerator implements GeneratorInterface {
+import java.text.MessageFormat;
+import java.util.List;
+import java.util.Map;
 
-    @Override
-    public FileCreator fileCreator(String generationFolder, String packageName) {
-        return null;
+
+public class MutationGenerator extends AbstractEndpointGenerator {
+
+    public MutationGenerator(ObjectTypeDefinition queryTypeDefinition,
+                             Map<String, ScalarTypeDefinition> scalars,
+                             String srcFolder, String packageName) {
+        super(queryTypeDefinition, scalars, srcFolder, packageName);
     }
 
-    @Override
-    public void generate() {
+    String generateMethodBody(String methodName, String returnTypeName, List<ParameterSpec> parameterSpecList) {
+        StringBuilder body = new StringBuilder();
+        body.append("Request request = new Request();").append(LINE_SEPARATOR);
 
+        body.append("String jsonBody = \"mutation { ").append(methodName).append( " \";").append(LINE_SEPARATOR);
+
+        body.append("jsonBody += \" ( \";").append(LINE_SEPARATOR);
+        body.append("int parameterStrSize = jsonBody.length();").append(LINE_SEPARATOR);
+        String parameterList = generateParameterList(parameterSpecList);
+
+        body.append(parameterList);
+        body.append("if(parameterStrSize < jsonBody.length()) {").append(LINE_SEPARATOR);
+        body.append("    jsonBody = jsonBody.substring(0, jsonBody.length() - 2);").append(LINE_SEPARATOR);
+        body.append("}").append(LINE_SEPARATOR);
+        body.append("jsonBody += \" ) \";").append(LINE_SEPARATOR);
+
+        body.append("jsonBody += \" { \";").append(LINE_SEPARATOR);
+        body.append("jsonBody += readFields(" + returnTypeName + ".class);").append(LINE_SEPARATOR);
+        body.append("jsonBody += \" } \";").append(LINE_SEPARATOR);
+
+        body.append("jsonBody += \" } \";").append(LINE_SEPARATOR);
+
+        body.append("request.setQuery(jsonBody);").append(LINE_SEPARATOR);
+        body.append("request.setVariables(java.util.Collections.emptyMap());").append(LINE_SEPARATOR);
+
+        body.append("Object response = restTemplate.postForObject(\"\", request, Object.class);").append(LINE_SEPARATOR);
+        body.append(
+                "java.util.Map map = objectMapper.convertValue(response, java.util.Map.class);")
+                .append(LINE_SEPARATOR);
+        body.append("Map nodeMap = (Map)((Map)map.get(\"data\")).get(\"" + methodName + "\");").append(LINE_SEPARATOR);
+
+        body.append("String responseJson = objectMapper.writeValueAsString(nodeMap);").append(LINE_SEPARATOR);
+        body.append(
+                returnTypeName + " nodeObject = objectMapper.readValue(responseJson, " + returnTypeName + ".class);")
+                .append(LINE_SEPARATOR);
+
+        body.append("return nodeObject;").append(LINE_SEPARATOR);
+
+        return body.toString();
     }
+
+    private String generateParameterList(List<ParameterSpec> parameterSpecList) {
+        StringBuffer generationBuffer = new StringBuffer();
+        parameterSpecList.forEach(parameterSpec -> {
+            String format = MessageFormat.format("if({0} != null) ", parameterSpec.name) + " { ";
+            generationBuffer.append(format).append(LINE_SEPARATOR);
+
+            String type = "String".equals(parameterSpec.name) ? "\\\"{0}\\\", \"" : "{0}, \"";
+            String pair = "    jsonBody += java.text.MessageFormat.format(\""
+                    + parameterSpec.name + ":" + type + ", " + parameterSpec.name+ ");";
+            generationBuffer.append(pair).append(LINE_SEPARATOR);
+
+            generationBuffer.append("}").append(LINE_SEPARATOR);
+        });
+
+        return generationBuffer.toString();
+    }
+
+
 
 }

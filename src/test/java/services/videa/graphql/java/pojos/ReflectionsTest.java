@@ -8,17 +8,17 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package services.videa.graphql.java;
+package services.videa.graphql.java.pojos;
 
-public interface GeneratorInterface {
+import org.junit.Assert;
+import org.junit.Test;
 
-    public static final String LINE_SEPARATOR = System.getProperty("line.separator");
+public class ReflectionsTest {
 
-
-    default FileCreator fileCreator(String generationFolder, String packageName) {
-        return new FileCreator(generationFolder, packageName);
+    @Test
+    public void methodName() {
+        String methodName = new Exception().getStackTrace()[0].getMethodName();
+        Assert.assertEquals("methodName", methodName);
     }
-
-    void generate();
 
 }

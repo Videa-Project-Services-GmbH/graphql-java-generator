@@ -8,16 +8,23 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package services.videa.graphql.java.pojos;
+package services.videa.graphql.java.endpoints.fakes;
 
-import org.junit.Assert;
-import org.junit.Test;
+import java.lang.String;
+import lombok.Data;
 
-public class MethodNameTest {
-
-    @Test
-    public void methodName() {
-        String methodName = new Exception().getStackTrace()[0].getMethodName();
-        Assert.assertEquals("methodName", methodName);
-    }
+@Data
+public class UserCreateInputFake {
+  private String username;
+  private String email;
+  private String password;
+  private String firstName;
+  private String lastName;
+  private String company;
+  private String address;
+  private String zip;
+  private String city;
+  private String tel;
+  private String telMobile;
+  private String externalUserId;
 }
