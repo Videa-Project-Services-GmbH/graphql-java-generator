@@ -110,7 +110,7 @@ public class MutationTest {
 
 
     @Test
-    public void createUserPayload() throws NoSuchMethodException, IllegalAccessException, IOException {
+    public void createUserPayload() {
         String json = readFields(CreateUserPayloadFake.class);
 
         Assert.assertNotNull(json);
@@ -118,6 +118,7 @@ public class MutationTest {
 
     private String readFields(Class aClass) {
         StringBuilder fieldBuilder = new StringBuilder();
+
         Field[] fields = aClass.getDeclaredFields();
         for (Field field : fields) {
             if ("java.util.List".equals(field.getType().getName())) {
@@ -132,26 +133,31 @@ public class MutationTest {
                     if(!isBasic(typeName)) {
                         fieldBuilder.append(" { ");
                     }
-                    Class clazz = null;
-                    try {
-                        clazz = Class.forName(typeName);
-                    } catch (ClassNotFoundException e) {
-                        throw new IllegalArgumentException(e);
-                    }
+                    Class clazz = classForName(typeName);
                     fieldBuilder.append(readFields(clazz)).append(" ");
 
                     if(!isBasic(typeName)) {
                         fieldBuilder.append(" } ");
                     }
                 }
-            } else if (field.getType().getName().startsWith("java.lang")
-                    || field.getType().getName().startsWith("java.math")) {
+            } else if (isBasic(field.getType().getName())) {
                 fieldBuilder.append(field.getName()).append(" ");
-            } else {
-                //fieldBuilder.append(readFields(field.getType()));
+            } else if(field.getType().getName().startsWith(aClass.getPackage().getName())) {
+                fieldBuilder.append(field.getName()).append(" ");
+                fieldBuilder.append(" { ");
+                fieldBuilder.append(readFields(field.getType()));
+                fieldBuilder.append(" } ");
             }
         }
         return fieldBuilder.toString();
+    }
+
+    private Class classForName(String typeName) {
+        try {
+            return Class.forName(typeName);
+        } catch (ClassNotFoundException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
 
