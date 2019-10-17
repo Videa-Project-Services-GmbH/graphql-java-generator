@@ -12,11 +12,19 @@ package services.videa.graphql.java.endpoints;
 
 import org.junit.Assert;
 import org.junit.Test;
+import services.videa.graphql.java.CreateUserInput;
+import services.videa.graphql.java.CreateUserPayload;
+import services.videa.graphql.java.Mutation;
+import services.videa.graphql.java.UserCreateInput;
 import services.videa.graphql.java.endpoints.fakes.CreateUserInputFake;
+import services.videa.graphql.java.endpoints.fakes.CreateUserPayloadFake;
 import services.videa.graphql.java.endpoints.fakes.UserCreateInputFake;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.UUID;
 
 
 public class MutationTest {
@@ -25,7 +33,24 @@ public class MutationTest {
     private String token = "2920a7e21d0b6ef854c0a53c7299403424086e11";
 
     @Test
-    public void createUser() throws IOException {
+    public void createUser() throws IOException, NoSuchMethodException, IllegalAccessException {
+        Mutation mutation = new Mutation(url, token);
+
+        String uuid = UUID.randomUUID().toString();
+        UserCreateInput user = new UserCreateInput();
+        user.setUsername(uuid);
+        user.setEmail(uuid + "@mailinator.com");
+        user.setPassword(uuid);
+        user.setFirstName("User");
+        user.setLastName("Name");
+        user.setZip("77777");
+        user.setCity("City");
+
+        CreateUserInput input = new CreateUserInput();
+        input.setUser(user);
+
+        CreateUserPayload payload = mutation.createUser(input);
+
     }
 
     @Test
@@ -84,13 +109,65 @@ public class MutationTest {
     }
 
 
-    public String createInput(Object input) throws NoSuchMethodException, IllegalAccessException {
-        String methodName = new Exception().getStackTrace()[0].getMethodName();
-        String objectName = this.getClass().getMethod(methodName, Object.class).getParameters()[0].getName();
+    @Test
+    public void createUserPayload() throws NoSuchMethodException, IllegalAccessException, IOException {
+        String json = readFields(CreateUserPayloadFake.class);
 
-        return objectName + ": { " +
-                inputJson(input) +
-                " } ";
+        Assert.assertNotNull(json);
+    }
+
+    private String readFields(Class aClass) {
+        StringBuilder fieldBuilder = new StringBuilder();
+        Field[] fields = aClass.getDeclaredFields();
+        for (Field field : fields) {
+            if ("java.util.List".equals(field.getType().getName())) {
+                field.setAccessible(true);
+                fieldBuilder.append(field.getName());
+
+                Type genericType = field.getGenericType();
+                System.out.println(genericType);
+
+                if (genericType instanceof ParameterizedType) {
+                    String typeName = ((ParameterizedType) genericType).getActualTypeArguments()[0].getTypeName();
+                    if(!isBasic(typeName)) {
+                        fieldBuilder.append(" { ");
+                    }
+                    Class clazz = null;
+                    try {
+                        clazz = Class.forName(typeName);
+                    } catch (ClassNotFoundException e) {
+                        throw new IllegalArgumentException(e);
+                    }
+                    fieldBuilder.append(readFields(clazz)).append(" ");
+
+                    if(!isBasic(typeName)) {
+                        fieldBuilder.append(" } ");
+                    }
+                }
+            } else if (field.getType().getName().startsWith("java.lang")
+                    || field.getType().getName().startsWith("java.math")) {
+                fieldBuilder.append(field.getName()).append(" ");
+            } else {
+                //fieldBuilder.append(readFields(field.getType()));
+            }
+        }
+        return fieldBuilder.toString();
+    }
+
+
+    private boolean isBasic(String typeName) {
+        return (typeName.startsWith("java.lang") || typeName.startsWith("java.math"));
+    }
+
+
+    public String createInput(Object input) throws NoSuchMethodException, IllegalAccessException {
+        String objectName = "";
+        if (input != null) {
+            String methodName = new Exception().getStackTrace()[0].getMethodName();
+            objectName = this.getClass().getMethod(methodName, Object.class).getParameters()[0].getName();
+            objectName += ": { " + inputJson(input) + " } ";
+        }
+        return objectName;
     }
 
 
@@ -102,18 +179,20 @@ public class MutationTest {
             String fieldClassName = field.getType().getName();
             Object value = field.get(input);
 
-            if (fieldClassName.startsWith("java.lang")
-                    || fieldClassName.startsWith("java.math")
-                    || fieldClassName.startsWith("java.util")) {
-                if (value != null) {
+            if (value != null) {
+                if (fieldClassName.startsWith("java.lang")
+                        || fieldClassName.startsWith("java.math")
+                        || fieldClassName.startsWith("java.util")) {
+
                     String quotes = value.getClass().getName().equals("java.lang.String") ? "\"" : "";
                     inputJson.append(field.getName()).append(": ").append(quotes).append(value).append(quotes)
                             .append(" ");
+
+                } else {
+                    inputJson.append(field.getName()).append(": ").append(" { ");
+                    String fieldJson = inputJson(value);
+                    inputJson.append(fieldJson).append(" } ");
                 }
-            } else {
-                inputJson.append(field.getName()).append(": ").append(" { ");
-                String fieldJson = inputJson(value);
-                inputJson.append(fieldJson).append(" } ");
             }
         }
         return inputJson.toString();
