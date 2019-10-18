@@ -16,18 +16,7 @@ import java.util.List;
 
 @Data
 public class CreateUserPayloadFake {
-  /**
-   * GraphQL: ListType{type=TypeName{name='ErrorType'}}
-   */
   private List<ErrorTypeFake> userErrors;
-
-  /**
-   * GraphQL: TypeName{name='UserNode'}
-   */
   private UserNodeFake user;
-
-  /**
-   * GraphQL: TypeName{name='String'}
-   */
   private String clientMutationId;
 }

@@ -67,7 +67,7 @@ public class CodeBlockTest {
                 .addMethod(queryMethodSpec)
                 .build();
 
-        JavaFile javaFile = JavaFile.builder("de.teilautos.zemtu.graphql.java.types", typeSpec).build();
+        JavaFile javaFile = JavaFile.builder("services.videa.graphql.java.endpoints", typeSpec).build();
         javaFile.writeTo(System.out);
 
     }

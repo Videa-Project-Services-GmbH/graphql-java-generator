@@ -30,7 +30,7 @@ public class JavaPoetTest {
                 .addEnumConstant("UNLOCK_VEHICLE")
                 .build();
 
-        JavaFile javaFile = JavaFile.builder("de.teilautos.graphql.generated", clazz)
+        JavaFile javaFile = JavaFile.builder("services.videa.graphql.java.pojos", clazz)
                 .build();
 
         javaFile.writeTo(System.out);
@@ -54,7 +54,7 @@ public class JavaPoetTest {
                 .addField(clientMutationId)
                 .build();
 
-        JavaFile javaFile = JavaFile.builder("de.teilautos.graphql.generated", clazz)
+        JavaFile javaFile = JavaFile.builder("services.videa.graphql.java.pojos", clazz)
                 .build();
 
         javaFile.writeTo(System.out);
@@ -68,7 +68,7 @@ public class JavaPoetTest {
         TypeSpec typeSpec = TypeSpec.classBuilder("ListField")
                 .addField(fieldSpec)
                 .build();
-        JavaFile javaFile = JavaFile.builder("de.teilautos.graphql.java.generated", typeSpec).build();
+        JavaFile javaFile = JavaFile.builder("services.videa.graphql.java.pojos", typeSpec).build();
         javaFile.writeTo(System.out);
     }
 

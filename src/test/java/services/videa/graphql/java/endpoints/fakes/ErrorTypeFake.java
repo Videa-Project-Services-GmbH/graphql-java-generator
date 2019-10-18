@@ -16,13 +16,6 @@ import java.util.List;
 
 @Data
 public class ErrorTypeFake {
-  /**
-   * GraphQL: NonNullType{type=TypeName{name='String'}}
-   */
   private String field;
-
-  /**
-   * GraphQL: NonNullType{type=ListType{type=NonNullType{type=TypeName{name='String'}}}}
-   */
   private List<String> messages;
 }

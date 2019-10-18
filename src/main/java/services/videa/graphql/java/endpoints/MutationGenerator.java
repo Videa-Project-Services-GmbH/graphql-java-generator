@@ -34,17 +34,13 @@ public class MutationGenerator extends AbstractEndpointGenerator {
         body.append("String jsonBody = \"mutation { ").append(methodName).append( " \";").append(LINE_SEPARATOR);
 
         body.append("jsonBody += \" ( \";").append(LINE_SEPARATOR);
-        body.append("int parameterStrSize = jsonBody.length();").append(LINE_SEPARATOR);
-        String parameterList = generateParameterList(parameterSpecList);
-
-        body.append(parameterList);
-        body.append("if(parameterStrSize < jsonBody.length()) {").append(LINE_SEPARATOR);
-        body.append("    jsonBody = jsonBody.substring(0, jsonBody.length() - 2);").append(LINE_SEPARATOR);
-        body.append("}").append(LINE_SEPARATOR);
+        body.append("jsonBody += services.videa.graphql.java.rendering.GqlRenderer.renderInputFields(input);")
+                .append(LINE_SEPARATOR);
         body.append("jsonBody += \" ) \";").append(LINE_SEPARATOR);
 
         body.append("jsonBody += \" { \";").append(LINE_SEPARATOR);
-        body.append("jsonBody += readFields(" + returnTypeName + ".class);").append(LINE_SEPARATOR);
+        body.append("jsonBody += services.videa.graphql.java.rendering.GqlRenderer.renderReturnFields("
+                + returnTypeName + ".class);").append(LINE_SEPARATOR);
         body.append("jsonBody += \" } \";").append(LINE_SEPARATOR);
 
         body.append("jsonBody += \" } \";").append(LINE_SEPARATOR);

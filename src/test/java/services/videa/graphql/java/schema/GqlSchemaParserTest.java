@@ -16,8 +16,6 @@ import graphql.language.ScalarTypeDefinition;
 import graphql.language.TypeDefinition;
 import org.junit.Before;
 import org.junit.Test;
-import services.videa.graphql.java.schema.GqlSchemaLoader;
-import services.videa.graphql.java.schema.GqlSchemaParser;
 
 import java.util.Map;
 

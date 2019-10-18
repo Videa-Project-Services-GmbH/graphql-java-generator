@@ -16,23 +16,9 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+
 public class BasicScalarMapperTest {
 
-    /*
-            case "Float":
-                className = ClassName.get(PACKAGE_LANG, "Float");
-                break;
-            case "Int":
-                className = ClassName.get(PACKAGE_LANG, "Integer");
-                break;
-            case "Boolean":
-                className = ClassName.get(PACKAGE_LANG, "Boolean");
-                break;
-            case "ID":
-            case "String":
-                className = ClassName.get(PACKAGE_LANG, "String");
-
-     */
     @Test
     public void floatType() {
         String packageName = "java.lang";
@@ -155,7 +141,6 @@ public class BasicScalarMapperTest {
 
     @Test
     public void customType() {
-        String packageName = "services.videa";
         ClassName className = BasicScalarMapper.convert("GraphQLType");
 
         assertNull(className);

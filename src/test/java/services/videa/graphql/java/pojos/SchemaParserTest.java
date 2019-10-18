@@ -28,7 +28,7 @@ public class SchemaParserTest {
 
         SchemaParser schemaParser = new SchemaParser();
         SchemaGenerator schemaGenerator = new SchemaGenerator();
-        URL url = getClass().getResource("/zemtu.gql");
+        URL url = getClass().getResource("/graphql-java-test.gql");
         String path = url.getFile();
         File file = new File(path);
 

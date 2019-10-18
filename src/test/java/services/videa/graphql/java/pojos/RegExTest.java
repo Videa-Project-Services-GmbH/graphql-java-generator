@@ -17,9 +17,9 @@ public class RegExTest {
 
     @Test
     public void replaceDotsBySlash() {
-        String srcFolder = "./src/main/generated";
-        String packageName = "services.videa.graphql.java.types";
+        String srcFolder = "./src/test/generated";
+        String packageName = "services.videa.graphql.java";
         String filePath = srcFolder + "/" + packageName.replace(".", "/");
-        Assert.assertEquals("./src/main/generated/services/videa/graphql/java/types", filePath);
+        Assert.assertEquals("./src/test/generated/services/videa/graphql/java", filePath);
     }
 }

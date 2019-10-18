@@ -44,6 +44,12 @@ public class GqlJavaGenerator {
             throw new IllegalArgumentException("Specify Argument 3: Generation Package where to put generated classes");
         }
 
+        generateJavaClasses(schemaFile, generationFolder, packageName);
+
+    }
+
+
+    public static void generateJavaClasses(String schemaFile, String generationFolder, String packageName) {
         GqlSchemaParser gqlSchemaParser = new GqlSchemaParser(GqlSchemaLoader.load(schemaFile, ""));
 
         EnumGenerator enumGenerator = new EnumGenerator(gqlSchemaParser.enums(), generationFolder, packageName);
@@ -68,7 +74,6 @@ public class GqlJavaGenerator {
         MutationGenerator mutationGenerator = new MutationGenerator(
                 gqlSchemaParser.objectTypes().get("Mutation"), gqlSchemaParser.scalars(), generationFolder, packageName);
         mutationGenerator.generate();
-
     }
 
 }

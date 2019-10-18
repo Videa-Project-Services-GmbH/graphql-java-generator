@@ -26,10 +26,6 @@ import static org.junit.Assert.assertNotNull;
 
 public class MutationGeneratorTest extends AbstractGraphQLJavaTest {
 
-    private static final String SRC_FOLDER = "./src/main/generated";
-    private static final String PACKAGE_NAME = "services.videa.graphql.java.types";
-    private static final String FILE_PATH = SRC_FOLDER + "/" + PACKAGE_NAME.replace(".", "/");
-
     private EnumGenerator enumGenerator;
     private InterfaceGenerator interfaceGenerator;
     private InputGenerator inputGenerator;

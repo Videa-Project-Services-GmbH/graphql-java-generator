@@ -10,21 +10,18 @@
 
 package services.videa.graphql.java.endpoints;
 
-import org.junit.Assert;
 import org.junit.Test;
-import services.videa.graphql.java.CreateUserInput;
-import services.videa.graphql.java.CreateUserPayload;
-import services.videa.graphql.java.Mutation;
-import services.videa.graphql.java.UserCreateInput;
 import services.videa.graphql.java.endpoints.fakes.CreateUserInputFake;
 import services.videa.graphql.java.endpoints.fakes.CreateUserPayloadFake;
 import services.videa.graphql.java.endpoints.fakes.UserCreateInputFake;
+import services.videa.graphql.java.rendering.GqlRenderer;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.UUID;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 
 public class MutationTest {
@@ -33,36 +30,15 @@ public class MutationTest {
     private String token = "2920a7e21d0b6ef854c0a53c7299403424086e11";
 
     @Test
-    public void createUser() throws IOException, NoSuchMethodException, IllegalAccessException {
-        Mutation mutation = new Mutation(url, token);
-
-        String uuid = UUID.randomUUID().toString();
-        UserCreateInput user = new UserCreateInput();
-        user.setUsername(uuid);
-        user.setEmail(uuid + "@mailinator.com");
-        user.setPassword(uuid);
-        user.setFirstName("User");
-        user.setLastName("Name");
-        user.setZip("77777");
-        user.setCity("City");
-
-        CreateUserInput input = new CreateUserInput();
-        input.setUser(user);
-
-        CreateUserPayload payload = mutation.createUser(input);
-
-    }
-
-    @Test
-    public void pojo() throws IllegalAccessException, NoSuchMethodException {
+    public void pojo() throws IllegalAccessException {
         UserCreateInputFake input = createUserCreateInput();
 
         String inputJson = inputJson(input);
-        Assert.assertNotNull(inputJson);
+        assertNotNull(inputJson);
 
         String output = "username: \"user.name\" email: \"user.name@mailinator.com\" " +
                 "password: \"secreate\" firstName: \"User\" lastName: \"Name\" zip: \"77777\" city: \"City\"";
-        Assert.assertEquals(output.trim(), inputJson.trim());
+        assertEquals(output.trim(), inputJson.trim());
     }
 
     private UserCreateInputFake createUserCreateInput() {
@@ -89,7 +65,7 @@ public class MutationTest {
         String output = "user:  { username: \"user.name\" email: \"user.name@mailinator.com\" password: \"secreate\" " +
                 "firstName: \"User\" lastName: \"Name\" zip: \"77777\" city: \"City\"  } " +
                 "clientMutationId: \"7c32421f-ec08-48fb-9c05-68d836b2cee3\"";
-        Assert.assertEquals(output.trim(), inputJson.trim());
+        assertEquals(output.trim(), inputJson.trim());
     }
 
 
@@ -104,67 +80,21 @@ public class MutationTest {
         String output = "input: { user:  { username: \"user.name\" email: \"user.name@mailinator.com\" " +
                 "password: \"secreate\" firstName: \"User\" lastName: \"Name\" zip: \"77777\" city: \"City\"  } " +
                 "clientMutationId: \"7c32421f-ec08-48fb-9c05-68d836b2cee3\"  }";
-        Assert.assertEquals(output.trim(), json.trim());
+        assertEquals(output.trim(), json.trim());
 
     }
 
 
     @Test
     public void createUserPayload() {
-        String json = readFields(CreateUserPayloadFake.class);
+        String json = GqlRenderer.renderReturnFields(CreateUserPayloadFake.class);
 
-        Assert.assertNotNull(json);
+        assertNotNull(json);
+        assertEquals("userErrors { field messages   } " +
+                "user  { id email zip city username firstName lastName externalUserId " +
+                "title url company tel telMobile avatar pk address fullName  } " +
+                "clientMutationId ".trim(), json.trim());
     }
-
-    private String readFields(Class aClass) {
-        StringBuilder fieldBuilder = new StringBuilder();
-
-        Field[] fields = aClass.getDeclaredFields();
-        for (Field field : fields) {
-            if ("java.util.List".equals(field.getType().getName())) {
-                field.setAccessible(true);
-                fieldBuilder.append(field.getName());
-
-                Type genericType = field.getGenericType();
-                System.out.println(genericType);
-
-                if (genericType instanceof ParameterizedType) {
-                    String typeName = ((ParameterizedType) genericType).getActualTypeArguments()[0].getTypeName();
-                    if(!isBasic(typeName)) {
-                        fieldBuilder.append(" { ");
-                    }
-                    Class clazz = classForName(typeName);
-                    fieldBuilder.append(readFields(clazz)).append(" ");
-
-                    if(!isBasic(typeName)) {
-                        fieldBuilder.append(" } ");
-                    }
-                }
-            } else if (isBasic(field.getType().getName())) {
-                fieldBuilder.append(field.getName()).append(" ");
-            } else if(field.getType().getName().startsWith(aClass.getPackage().getName())) {
-                fieldBuilder.append(field.getName()).append(" ");
-                fieldBuilder.append(" { ");
-                fieldBuilder.append(readFields(field.getType()));
-                fieldBuilder.append(" } ");
-            }
-        }
-        return fieldBuilder.toString();
-    }
-
-    private Class classForName(String typeName) {
-        try {
-            return Class.forName(typeName);
-        } catch (ClassNotFoundException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-
-    private boolean isBasic(String typeName) {
-        return (typeName.startsWith("java.lang") || typeName.startsWith("java.math"));
-    }
-
 
     public String createInput(Object input) throws NoSuchMethodException, IllegalAccessException {
         String objectName = "";

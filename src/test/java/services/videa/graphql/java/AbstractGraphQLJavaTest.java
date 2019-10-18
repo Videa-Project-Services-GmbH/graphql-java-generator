@@ -16,6 +16,10 @@ import services.videa.graphql.java.schema.GqlSchemaParser;
 
 public class AbstractGraphQLJavaTest {
 
+    protected static final String SRC_FOLDER = "./src/test/generated";
+    protected static final String PACKAGE_NAME = "services.videa.graphql.java";
+    protected static final String FILE_PATH = SRC_FOLDER + "/" + PACKAGE_NAME.replace(".", "/");
+
     protected GqlSchemaParser gqlSchemaParser;
 
     @Before

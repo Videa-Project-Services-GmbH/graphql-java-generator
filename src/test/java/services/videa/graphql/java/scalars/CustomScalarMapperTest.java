@@ -17,7 +17,7 @@ import services.videa.graphql.java.schema.GqlSchemaLoader;
 import services.videa.graphql.java.schema.GqlSchemaParser;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+
 
 public class CustomScalarMapperTest {
 
