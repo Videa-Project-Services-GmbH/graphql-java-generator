@@ -11,6 +11,10 @@
 package services.videa.graphql.java.endpoints;
 
 import org.junit.Test;
+import services.videa.graphql.endpoints.CreateUserInput;
+import services.videa.graphql.endpoints.CreateUserPayload;
+import services.videa.graphql.endpoints.Mutation;
+import services.videa.graphql.endpoints.UserCreateInput;
 import services.videa.graphql.java.*;
 import services.videa.graphql.java.endpoints.fakes.CreateUserInputFake;
 import services.videa.graphql.java.endpoints.fakes.CreateUserPayloadFake;
@@ -19,7 +23,6 @@ import services.videa.graphql.java.rendering.GqlRenderer;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.UUID;
 
@@ -34,8 +37,9 @@ public class MutationIntegrationTest extends AbstractGraphQLJavaTest {
 
     @Test
     public void createUser() throws NoSuchMethodException, IllegalAccessException, IOException {
-        //deleteJavaClasses();
-        GqlJavaGenerator.generateJavaClasses("graphql-java-test.gql", SRC_FOLDER, PACKAGE_NAME);
+        deleteJavaClasses();
+        GqlJavaGenerator.generateJavaClasses("graphql-java-test.gql",
+                SRC_FOLDER, "services.videa.graphql.endpoints");
 
         Mutation mutation = new Mutation(url, token);
 
