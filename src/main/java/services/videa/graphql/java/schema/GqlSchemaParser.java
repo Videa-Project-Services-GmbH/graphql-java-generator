@@ -75,7 +75,7 @@ public class GqlSchemaParser {
     /**
      * Return both object and input types.
      *
-     * @return Map<String, TypeDefinition> Java types derived from schema.
+     * @return Java types derived from schema.
      */
     public Map<String, TypeDefinition> types() {
         return typeRegistry.types();

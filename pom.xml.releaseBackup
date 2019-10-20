@@ -4,7 +4,7 @@
 
     <groupId>services.videa</groupId>
     <artifactId>graphql-java-generator</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.2-SNAPSHOT</version>
 
     <name>GraphQL Java Generator</name>
     <description>Java Class Generator for GraphQL Schema Files (Approach: Schema First)</description>

@@ -100,7 +100,8 @@ public class TypeMapper {
     /**
      * Find out type name from given type and package name.
      *
-     * @param type Type and package name
+     * @param type Type
+     * @param packageName Package name
      * @return Type name to generate Java class from.
      */
     public com.squareup.javapoet.TypeName typeName(Type type, String packageName) {
