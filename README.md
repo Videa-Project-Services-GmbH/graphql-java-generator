@@ -8,4 +8,4 @@ The project uses Open Source 3rd Party projects to fulfill its goals.
 
 Intention is to build up a community so developers can contribute to it.
 
-mvn clean deploy -Dgpg.passphrase=yourpassphrase
+pmvn clean deploy -Dgpg.passphrase=yourpassphrase
