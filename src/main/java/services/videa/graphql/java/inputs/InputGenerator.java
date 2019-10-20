@@ -45,8 +45,9 @@ public class InputGenerator implements GeneratorInterface {
 
 
     /**
+     * Generate input type from parsed schmema
      *
-     * @param inputObjectTypeDefinition
+     * @param inputObjectTypeDefinition Input type parsed from schema
      */
     public void generate(InputObjectTypeDefinition inputObjectTypeDefinition) {
         logger.debug("inputObjectTypeDefinition: {}", inputObjectTypeDefinition);
@@ -58,7 +59,7 @@ public class InputGenerator implements GeneratorInterface {
 
 
     /**
-     *
+     * Generate all input types
      */
     @Override
     public void generate() {

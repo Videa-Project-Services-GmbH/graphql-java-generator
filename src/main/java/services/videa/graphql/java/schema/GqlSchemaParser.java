@@ -20,6 +20,10 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+
+/**
+ * GraphQL Schema Parser containing Java object of all schema types.
+ */
 public class GqlSchemaParser {
     private static Logger logger = LoggerFactory.getLogger(GqlSchemaParser.class);
 
@@ -41,6 +45,9 @@ public class GqlSchemaParser {
     /**
      * Search for a type definition with given name and return if existent.
      * Return null otherwise.
+     *
+     * @param name GraphQL type to look for
+     * @return TypeDefinition derived from type name.
      */
     public TypeDefinition findByName(String name) {
         if(this.scalars().containsKey(name)) {
@@ -67,6 +74,8 @@ public class GqlSchemaParser {
 
     /**
      * Return both object and input types.
+     *
+     * @return Map<String, TypeDefinition> Java types derived from schema.
      */
     public Map<String, TypeDefinition> types() {
         return typeRegistry.types();
@@ -85,6 +94,12 @@ public class GqlSchemaParser {
         return this.objectTypes;
     }
 
+
+    /**
+     * Return all input types
+     *
+     * @return Input types from schema
+     */
     public Map<String, InputObjectTypeDefinition> inputTypes() {
         if (this.inputTypes == null) {
             this.inputTypes = new HashMap<>();
@@ -98,6 +113,12 @@ public class GqlSchemaParser {
         return this.inputTypes;
     }
 
+
+    /**
+     * Return all enum types
+     *
+     * @return Enum types derived from schema.
+     */
     public Map<String, EnumTypeDefinition> enums() {
         if (this.enums == null) {
             this.enums = new HashMap<>();
@@ -111,6 +132,12 @@ public class GqlSchemaParser {
         return this.enums;
     }
 
+
+    /**
+     * Return all interfaces
+     *
+     * @return Interfaces derived from schema.
+     */
     public Map<String, InterfaceTypeDefinition> interfaces() {
         if (this.interfaces == null) {
             this.interfaces = new HashMap<>();

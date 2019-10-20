@@ -34,13 +34,13 @@ public class SchemaParserTest {
 
         TypeDefinitionRegistry typeRegistry = schemaParser.parse(file);
 
-        System.out.println(typeRegistry);
+        //System.out.println(typeRegistry);
 
         Map<String, ScalarTypeDefinition> scalars = typeRegistry.scalars();
-        System.out.println(scalars);
+        //System.out.println(scalars);
 
         Map<String, TypeDefinition> types = typeRegistry.types();
-        System.out.println(types);
+        //System.out.println(types);
 
     }
 }

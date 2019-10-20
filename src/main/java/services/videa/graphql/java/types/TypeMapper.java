@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 
 
 /**
- *
+ * Mapper to convert types from schema to type specifications.
  */
 public class TypeMapper {
     private static Logger logger = LoggerFactory.getLogger(TypeMapper.class);
@@ -42,10 +42,11 @@ public class TypeMapper {
 
 
     /**
+     * Convert type definition to type specification.
      *
-     * @param objectTypeDefinition
-     * @param packageName
-     * @return
+     * @param objectTypeDefinition Type definition read from schema.
+     * @param packageName Package name where to put generated classes.
+     * @return Type specification
      */
     public TypeSpec convert(ObjectTypeDefinition objectTypeDefinition, String packageName) {
         logger.debug("objectTypeDefinition: {}", objectTypeDefinition);
@@ -76,10 +77,11 @@ public class TypeMapper {
 
 
     /**
+     * Convert field definition to a field specification.
      *
-     * @param fieldDefinition
-     * @param packageName
-     * @return
+     * @param fieldDefinition Field definition read from schema.
+     * @param packageName Package name where to find class.
+     * @return Field specification
      */
     private FieldSpec convert(FieldDefinition fieldDefinition, String packageName) {
         logger.debug("fieldDefinition: {}", fieldDefinition);
@@ -96,8 +98,10 @@ public class TypeMapper {
 
 
     /**
-     * @param type
-     * @return
+     * Find out type name from given type and package name.
+     *
+     * @param type Type and package name
+     * @return Type name to generate Java class from.
      */
     public com.squareup.javapoet.TypeName typeName(Type type, String packageName) {
         com.squareup.javapoet.TypeName typeName;
@@ -136,10 +140,11 @@ public class TypeMapper {
 
 
     /**
+     * Find out list type from package name and list type itself.
      *
-     * @param packageName
-     * @param aType
-     * @return
+     * @param packageName Package name
+     * @param aType List type
+     * @return Type name
      */
     private com.squareup.javapoet.TypeName defineListType(String packageName, ListType aType) {
         com.squareup.javapoet.TypeName typeName;
@@ -152,10 +157,11 @@ public class TypeMapper {
 
 
     /**
+     * Define type name by using package name and type name.
      *
-     * @param packageName
-     * @param aType
-     * @return
+     * @param packageName Package name
+     * @param aType Type name
+     * @return Type name for Java class generation
      */
     private com.squareup.javapoet.TypeName defineTypeName(String packageName, TypeName aType) {
         com.squareup.javapoet.TypeName typeName;

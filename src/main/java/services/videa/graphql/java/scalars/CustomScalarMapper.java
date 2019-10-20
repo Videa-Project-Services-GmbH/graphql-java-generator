@@ -19,7 +19,7 @@ import java.util.Map;
 
 
 /**
- *
+ * Mapper to convert all custom Scalars to Java classes.
  */
 public class CustomScalarMapper {
     private static Logger logger = LoggerFactory.getLogger(CustomScalarMapper.class);
@@ -33,9 +33,10 @@ public class CustomScalarMapper {
 
 
     /**
+     * Convert a given custom scalar type to a Java class.
      *
-     * @param scalarName
-     * @return
+     * @param scalarName Scalar name as string
+     * @return Class name derived from scalar name.
      */
     public ClassName convert(String scalarName) {
         ClassName className = null;

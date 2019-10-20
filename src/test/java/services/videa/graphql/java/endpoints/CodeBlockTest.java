@@ -34,7 +34,7 @@ public class CodeBlockTest {
                 "        });\n" +
                 "        return restTemplate;\n";
         CodeBlock codeBlock = CodeBlock.builder().add(restTemplateSnippet, url, token).build();
-        System.out.println(codeBlock);
+        //System.out.println(codeBlock);
 
         MethodSpec methodSpec = MethodSpec.methodBuilder("init")
                 .addModifiers(Modifier.PRIVATE)
@@ -68,7 +68,7 @@ public class CodeBlockTest {
                 .build();
 
         JavaFile javaFile = JavaFile.builder("services.videa.graphql.java.endpoints", typeSpec).build();
-        javaFile.writeTo(System.out);
+        //javaFile.writeTo(System.out);
 
     }
 }

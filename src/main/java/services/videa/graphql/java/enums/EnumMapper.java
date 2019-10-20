@@ -24,9 +24,10 @@ public class EnumMapper {
 
 
     /**
+     * Convert an enum type parsed from schema.
      *
-     * @param enumTypeDefinition
-     * @return
+     * @param enumTypeDefinition Enum type definition
+     * @return Type specification to generate Java class from
      */
     public static TypeSpec convert(EnumTypeDefinition enumTypeDefinition) {
         logger.debug("enumTypeDefinition: {}", enumTypeDefinition);

@@ -25,7 +25,7 @@ import java.util.Map;
 
 
 /**
- *
+ * Type generator to create Java classes for all GraphQL types.
  */
 public class TypeGenerator implements GeneratorInterface {
     private static Logger logger = LoggerFactory.getLogger(TypeGenerator.class);
@@ -49,8 +49,9 @@ public class TypeGenerator implements GeneratorInterface {
 
 
     /**
+     * Generate a single type class to the generation folder.
      *
-     * @param objectTypeDefinition
+     * @param objectTypeDefinition Type definition
      */
     public void generate(ObjectTypeDefinition objectTypeDefinition) {
         logger.debug("objectTypeDefinition: {}", objectTypeDefinition);

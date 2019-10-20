@@ -33,7 +33,7 @@ public class JavaPoetTest {
         JavaFile javaFile = JavaFile.builder("services.videa.graphql.java.pojos", clazz)
                 .build();
 
-        javaFile.writeTo(System.out);
+        //javaFile.writeTo(System.out);
 
     }
     @Test
@@ -57,7 +57,7 @@ public class JavaPoetTest {
         JavaFile javaFile = JavaFile.builder("services.videa.graphql.java.pojos", clazz)
                 .build();
 
-        javaFile.writeTo(System.out);
+        //javaFile.writeTo(System.out);
     }
 
     @Test
@@ -69,7 +69,7 @@ public class JavaPoetTest {
                 .addField(fieldSpec)
                 .build();
         JavaFile javaFile = JavaFile.builder("services.videa.graphql.java.pojos", typeSpec).build();
-        javaFile.writeTo(System.out);
+        //javaFile.writeTo(System.out);
     }
 
 
@@ -84,6 +84,6 @@ public class JavaPoetTest {
                 .build();
 
         JavaFile javaFile = JavaFile.builder("services.videa.graphql.java.pojos", typeSpec).build();
-        javaFile.writeTo(System.out);
+        //javaFile.writeTo(System.out);
     }
 }

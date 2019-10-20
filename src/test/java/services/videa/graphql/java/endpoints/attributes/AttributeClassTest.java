@@ -40,7 +40,7 @@ public class AttributeClassTest {
         Class<?> aClass = Class.forName("services.videa.graphql.java.endpoints.attributes.AttributeClassConnection");
 
         String queryRequest = readFields(aClass);
-        System.out.println(queryRequest);
+        //System.out.println(queryRequest);
     }
 
     private String readFields(Class<?> aClass) throws ClassNotFoundException {
