@@ -19,10 +19,24 @@ import services.videa.graphql.java.schema.GqlSchemaLoader;
 import services.videa.graphql.java.schema.GqlSchemaParser;
 import services.videa.graphql.java.types.TypeGenerator;
 
-import java.io.File;
 
+/**
+ * Java class generator for a given GraphQL schema file. Approach is 'Schema First'.
+ */
 public class GqlJavaGenerator {
 
+    /**
+     * Main usage to generate Java classes from schema file. Program arguments are:
+     * <ul>
+     *     <li>Location of the schema file located in the classpath (example: schema.gql)</li>
+     *     <li>Output folder relative to root project folder (example: /src/main/generated)</li>
+     *     <li>Custom package name (example: com.example.graphql.java)</li>
+     * </ul>
+     * Example using CLI:
+     * java -jar services.videa.graphql.java.GqlJavaGenerator schema.gql src/main/generated services.videa.graphql.java
+     *
+     * @param args Java program arguments as described above.
+     */
     public static void main(String[] args) {
         if(args.length == 0) {
             throw new IllegalArgumentException("Usage Example: " +
@@ -49,6 +63,15 @@ public class GqlJavaGenerator {
     }
 
 
+    /**
+     * Generate Java classes from given GraphQL Schema. The schema file must be located in the classpath.
+     * Java classes are put to generation folder relative to this project root. Package name specifies
+     * customized project package.
+     *
+     * @param schemaFile Location of the schema file located in the classpath.
+     * @param generationFolder Output folder relative to root project folder.
+     * @param packageName Custom package name.
+     */
     public static void generateJavaClasses(String schemaFile, String generationFolder, String packageName) {
         GqlSchemaParser gqlSchemaParser = new GqlSchemaParser(GqlSchemaLoader.load(schemaFile, ""));
 
