@@ -28,6 +28,6 @@ Central Repository: [Nexus Repository Manager](https://oss.sonatype.org/#nexus-s
 </dependency>
 ```
 ## Maven Plugin
-Comming soon: graphql-java-plugin
+Comming soon: graphql-java-maven-plugin
 
 # Release Notes
