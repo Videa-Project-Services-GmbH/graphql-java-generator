@@ -4,7 +4,7 @@
 
     <groupId>services.videa</groupId>
     <artifactId>graphql-java-generator</artifactId>
-    <version>1.1.1-SNAPSHOT</version>
+    <version>1.1.1</version>
 
     <name>GraphQL Java Generator</name>
     <description>Java Class Generator for GraphQL Schema Files (Approach: Schema First)</description>
@@ -112,7 +112,7 @@
         <connection>scm:git:https://github.com/videa-services/graphql-java-generator</connection>
         <developerConnection>scm:git:https://github.com/videa-services/graphql-java-generator</developerConnection>
         <url>https://github.com/videa-services/graphql-java-generator</url>
-        <tag>HEAD</tag>
+        <tag>1.1.1</tag>
     </scm>
 
     <build>
