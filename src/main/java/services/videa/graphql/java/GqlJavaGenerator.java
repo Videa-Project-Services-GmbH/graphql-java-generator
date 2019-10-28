@@ -15,9 +15,13 @@ import services.videa.graphql.java.endpoints.QueryGenerator;
 import services.videa.graphql.java.enums.EnumGenerator;
 import services.videa.graphql.java.inputs.InputGenerator;
 import services.videa.graphql.java.interfaces.InterfaceGenerator;
-import services.videa.graphql.java.schema.GqlSchemaLoader;
 import services.videa.graphql.java.schema.GqlSchemaParser;
 import services.videa.graphql.java.types.TypeGenerator;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 
 /**
@@ -26,55 +30,52 @@ import services.videa.graphql.java.types.TypeGenerator;
 public class GqlJavaGenerator {
 
     /**
-     * Main usage to generate Java classes from schema file. Program arguments are:
-     * <ul>
-     *     <li>Location of the schema file located in the classpath (example: schema.gql)</li>
-     *     <li>Output folder relative to root project folder (example: /src/main/generated)</li>
-     *     <li>Custom package name (example: com.example.graphql.java)</li>
-     * </ul>
-     * Example using CLI:
-     * java -jar services.videa.graphql.java.GqlJavaGenerator schema.gql src/main/generated services.videa.graphql.java
+     * Generate Java classes from given GraphQL schema. The schema is passed as IDL content string.
      *
-     * @param args Java program arguments as described above.
+     * @param schemaContent GraphQL schema content as IDL string
+     * @param outputFolder Generation output folder for Java classes
+     * @param packageName Package name for Java classes
      */
-    public static void main(String[] args) {
-        if(args.length == 0) {
-            throw new IllegalArgumentException("Usage Example: " +
-                    "java -jar services.videa.graphql.java.GqlJavaGenerator " +
-                    "schema.gql " +
-                    "src/main/generated " +
-                    "services.videa.graphql.java");
-        }
-        String schemaFile = args[0];
-        if(schemaFile == null) {
-            throw new IllegalArgumentException("Specify Argument 1: GraphQL Schema File");
-        }
-        String generationFolder = args[1];
-        if(generationFolder == null) {
-            throw new IllegalArgumentException("Specify Argument 2: Generation Folder relative to project's root folder");
-        }
-        String packageName = args[2];
-        if(packageName == null) {
-            throw new IllegalArgumentException("Specify Argument 3: Generation Package where to put generated classes");
+    public static void generateJavaClasses(InputStream schemaContent, String outputFolder, String packageName) {
+        String convert;
+        try {
+            convert = convert(schemaContent);
+        } catch (IOException e) {
+            throw new IllegalArgumentException(e);
         }
 
-        generateJavaClasses(schemaFile, generationFolder, packageName);
-
+        GqlSchemaParser gqlSchemaParser = new GqlSchemaParser(convert);
+        generate(outputFolder, packageName, gqlSchemaParser);
     }
 
 
     /**
-     * Generate Java classes from given GraphQL Schema. The schema file must be located in the classpath.
-     * Java classes are put to generation folder relative to this project root. Package name specifies
-     * customized project package.
+     * Convert an input stream to a string by reading contect line by line.
      *
-     * @param schemaFile Location of the schema file located in the classpath.
-     * @param generationFolder Output folder relative to root project folder.
-     * @param packageName Custom package name.
+     * @param inputStream Given input stream to be converted.
+     * @return Converted string
+     * @throws IOException In case of internal reader conflicts
      */
-    public static void generateJavaClasses(String schemaFile, String generationFolder, String packageName) {
-        GqlSchemaParser gqlSchemaParser = new GqlSchemaParser(GqlSchemaLoader.load(schemaFile, ""));
+    public static String convert(InputStream inputStream) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+        StringBuilder out = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            out.append(line).append(System.getProperty("line.separator"));
+        }
+        reader.close();
+        return out.toString();
+    }
 
+
+    /**
+     * Generate Java classes from given GraphQL schema parser.
+     *
+     * @param generationFolder Output folder for generated Java classes
+     * @param packageName Package name for generated Java classes
+     * @param gqlSchemaParser Schema parser to parse GraphQL types
+     */
+    private static void generate(String generationFolder, String packageName, GqlSchemaParser gqlSchemaParser) {
         EnumGenerator enumGenerator = new EnumGenerator(gqlSchemaParser.enums(), generationFolder, packageName);
         enumGenerator.generate();
 

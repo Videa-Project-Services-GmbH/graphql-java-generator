@@ -13,7 +13,7 @@ package services.videa.graphql.java.schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.File;
 import java.net.URL;
 
 public class GqlSchemaLoader {
@@ -42,25 +42,6 @@ public class GqlSchemaLoader {
         logger.debug("file: {}", file);
 
         return file;
-    }
-
-
-    /**
-     * Convert an input stream to a string by reading contect line by line.
-     *
-     * @param inputStream Given input stream to be converted.
-     * @return Converted string
-     * @throws IOException In case of internal reader conflicts
-     */
-    private static String convert(InputStream inputStream) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-        StringBuilder out = new StringBuilder();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            out.append(line);
-        }
-        reader.close();
-        return out.toString();
     }
 
 

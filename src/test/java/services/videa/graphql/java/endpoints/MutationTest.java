@@ -16,9 +16,7 @@ import services.videa.graphql.java.endpoints.fakes.CreateUserPayloadFake;
 import services.videa.graphql.java.endpoints.fakes.UserCreateInputFake;
 import services.videa.graphql.java.rendering.GqlRenderer;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -100,7 +98,9 @@ public class MutationTest {
         String objectName = "";
         if (input != null) {
             String methodName = new Exception().getStackTrace()[0].getMethodName();
-            objectName = this.getClass().getMethod(methodName, Object.class).getParameters()[0].getName();
+            objectName = this.getClass().getMethod(methodName, Object.class)
+                    .getParameters()[0].getName()
+                    .replace("arg0", "input");
             objectName += ": { " + inputJson(input) + " } ";
         }
         return objectName;

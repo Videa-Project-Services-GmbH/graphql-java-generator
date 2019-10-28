@@ -17,6 +17,14 @@ Example:
 java -jar services.videa.graphql.java.GqlJavaGenerator schema.gql src/main/generated services.videa.graphql.java
 ```
 
+# Build Management
+## Perform a Release Deployment to OSSRH
+```
+gpg --keyserver hkp://pool.sks-keyservers.net --send-keys 2B3C7FC9D2D190F682A3EA90B74BC126F4A8760C
+
+mvn release:clean release:prepare
+mvn release:perform
+```
 # Maven Usage
 ## Maven Dependency
 Central Repository: [Nexus Repository Manager](https://oss.sonatype.org/#nexus-search;quick~videa-services)

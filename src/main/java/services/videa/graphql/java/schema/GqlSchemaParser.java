@@ -42,6 +42,19 @@ public class GqlSchemaParser {
         logger.debug("typeRegistry: {}", typeRegistry);
     }
 
+    public GqlSchemaParser(String schemaContent) {
+        if(schemaContent == null) {
+            throw new IllegalArgumentException(this.getClass().getSimpleName()
+                    + " schemaContent is null but must be defined");
+        }
+        logger.debug("schemaContent: {}", schemaContent);
+
+        SchemaParser schemaParser = new SchemaParser();
+        typeRegistry = schemaParser.parse(schemaContent);
+
+        logger.debug("typeRegistry: {}", typeRegistry);
+    }
+
     /**
      * Search for a type definition with given name and return if existent.
      * Return null otherwise.
