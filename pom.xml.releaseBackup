@@ -4,7 +4,7 @@
 
     <groupId>services.videa</groupId>
     <artifactId>graphql-java-generator</artifactId>
-    <version>1.1.1-SNAPSHOT</version>
+    <version>1.0.5-SNAPSHOT</version>
 
     <name>GraphQL Java Generator</name>
     <description>Java Class Generator for GraphQL Schema Files (Approach: Schema First)</description>
@@ -98,20 +98,8 @@
         </repository>
     </distributionManagement>
 
-    <developers>
-        <developer>
-            <id>olihock</id>
-            <name>Oliver Hock</name>
-            <email>oliver.hock@videa.services</email>
-            <organization>Videa Project Services</organization>
-            <organizationUrl>http://videa.services</organizationUrl>
-        </developer>
-    </developers>
-
     <scm>
-        <connection>scm:git:https://github.com/videa-services/graphql-java-generator</connection>
         <developerConnection>scm:git:https://github.com/videa-services/graphql-java-generator</developerConnection>
-        <url>https://github.com/videa-services/graphql-java-generator</url>
         <tag>HEAD</tag>
     </scm>
 
